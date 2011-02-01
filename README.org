@@ -1,0 +1,4 @@
+* Installation
+
+This isn't really a package, just a bunch of random tools.  See commentary in
+each file for installation information.
