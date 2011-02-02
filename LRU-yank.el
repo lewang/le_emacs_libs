@@ -9,10 +9,10 @@
 ;; Copyright (c) 2006, 2011 Le Wang
 
 ;; Version: 0.2
-;; Last-Updated: Wed Feb  2 15:55:52 2011 (+0800)
+;; Last-Updated: Wed Feb  2 16:41:54 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 1
-;; URL: https://github.com/lewang/le_emacs_libs
+;;     Update #: 2
+;; URL: https://github.com/lewang/le_emacs_libs/blob/master/LRU-yank.el
 ;; Keywords:
 ;; Compatibility: GNU Emacs 21, 23.2.1
 ;; Keywords: convenience editing
@@ -133,14 +133,6 @@ return the new list."
       (setq kill-ring-yank-pointer kill-ring)
       (setq LRU-yank-count-prev LRU-yank-count)
       (setq ad-return-value (car kill-ring)))))
-
-
-
-;;;;##########################################################################
-;;;;  User Options, Variables
-;;;;##########################################################################
-
-
 
 
 
