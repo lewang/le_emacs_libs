@@ -7,9 +7,9 @@
 
 ;; Created: Wed Feb  2 23:09:17 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Wed Feb  2 23:30:30 2011 (+0800)
+;; Last-Updated: Wed Feb  2 23:33:28 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 12
+;;     Update #: 14
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -136,8 +136,6 @@ still respected."
        (try-code-fill-string
          nil ">" (- try-code-fill-length (length try-code-end-string)) t)))
 
-
-;;;###autoload
 (defun try-code-get-char (prompt accept-string)
   "repeatedly read chars until getting one in accept-string.
   char inputs are case insensitive.
