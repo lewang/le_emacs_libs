@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Wed Feb  2 11:48:33 2011 (+0800)
+;; Last-Updated: Wed Feb  2 14:47:43 2011 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 465
+;;     Update #: 467
 ;; URL: Keywords: Auto Indentation Compatibility: Tested with Emacs 23.2.1
 ;;
 ;; Features that might be required by this library:
@@ -374,7 +374,8 @@ If at end of line, obey `auto-indent-kill-line-at-eol'
                            (error "invalid auto-indent-kill-line-at-eol setting %s"
                                   auto-indent-kill-line-at-eol)))
                   ad-do-it
-                  ))))
+                  )))
+          ad-do-it)
         (indent-according-to-mode))
     ad-do-it))
 
