@@ -7,9 +7,9 @@
 
 ;; Created: Wed Feb  2 23:09:17 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Wed Feb  2 23:21:02 2011 (+0800)
+;; Last-Updated: Wed Feb  2 23:30:30 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 11
+;;     Update #: 12
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -84,6 +84,39 @@
   (concat
    try-code-end-prefix
    " *end* "))
+
+(defun try-code-fill-string (text fill-string-atom length &optional left-justified)
+  "fills `text' upto `length' with `fill-string-atom', right justified.
+
+note `left-justified' option.
+
+If \(length text\) > length, truncation is performed, `left-justified' is
+still respected."
+  (if (> (length text) length)
+      (if left-justified
+          (substring text 0 length)
+        (substring text (- length)))
+    (let ((fill-string-length (- length
+                                 (length text)))
+          (fill-string-atom-length (length fill-string-atom))
+          fill-string)
+      (when (< fill-string-atom-length 1)
+        (error "`fill-string-atom' can't be null."))
+      (setq fill-string
+            (mapconcat 'identity
+                       (make-vector (ceiling (/
+                                              (float fill-string-length)
+                                              fill-string-atom-length))
+                                    fill-string-atom)
+                       ""))
+      (when (> (length fill-string) fill-string-length)
+        (setq fill-string (substring
+                           fill-string
+                           0
+                           fill-string-length)))
+      (if left-justified
+          (concat text fill-string)
+        (concat fill-string text)))))
 
 (setq try-code-start-string
       (concat
@@ -253,39 +286,6 @@ text-begin-pos starts after spaces and read-only text"
     (if (< (point) end)
         nil
       t)))
-
-(defun try-code-fill-string (text fill-string-atom length &optional left-justified)
-  "fills `text' upto `length' with `fill-string-atom', right justified.
-
-note `left-justified' option.
-
-If \(length text\) > length, truncation is performed, `left-justified' is
-still respected."
-  (if (> (length text) length)
-      (if left-justified
-          (substring text 0 length)
-        (substring text (- length)))
-    (let ((fill-string-length (- length
-                                 (length text)))
-          (fill-string-atom-length (length fill-string-atom))
-          fill-string)
-      (when (< fill-string-atom-length 1)
-        (error "`fill-string-atom' can't be null."))
-      (setq fill-string
-            (mapconcat 'identity
-                       (make-vector (ceiling (/
-                                              (float fill-string-length)
-                                              fill-string-atom-length))
-                                    fill-string-atom)
-                       ""))
-      (when (> (length fill-string) fill-string-length)
-        (setq fill-string (substring
-                           fill-string
-                           0
-                           fill-string-length)))
-      (if left-justified
-          (concat text fill-string)
-        (concat fill-string text)))))
 
 (defun try-code-get-comment-info-alist (point)
   "Return info about the last old/test code pair in an alist,
