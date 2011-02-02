@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Tue Feb  1 22:16:55 2011 (+0800)
+;; Last-Updated: Wed Feb  2 11:38:04 2011 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 462
+;;     Update #: 464
 ;; URL: Keywords: Auto Indentation Compatibility: Tested with Emacs 23.2.1
 ;;
 ;; Features that might be required by this library:
@@ -328,7 +328,10 @@ You should also set `kill-whole-line' to do what you want.
                    auto-indent-mode
                    (not (minibufferp))
                    auto-indent-delete-line-char-remove-extra-spaces)
-          (just-one-space)
+          (save-excursion
+            (skip-chars-backward " \t")
+            (when (looking-at "[ \t]+")
+              (replace-match " ")))
           (when (and (eolp) (looking-back "[ \t]+" nil t))
             (replace-match ""))))
     ad-do-it))
