@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Wed Feb  2 14:47:43 2011 (+0800)
+;; Last-Updated: Wed Feb  2 23:27:14 2011 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 467
+;;     Update #: 469
 ;; URL: Keywords: Auto Indentation Compatibility: Tested with Emacs 23.2.1
 ;;
 ;; Features that might be required by this library:
@@ -308,8 +308,9 @@ You should also set `kill-whole-line' to do what you want.
 (defmacro auto-indent-advice-command (command)
   "Define advices for yank and yank-pop."
   `(defadvice ,command (after auto-indent-mode-advice activate)
-     (when (and (not current-prefix-arg)
-                auto-indent-mode
+     (when (and auto-indent-mode
+                (memq major-mode auto-indent-disabled-modes-list)
+                (not current-prefix-arg)
                 (not (minibufferp)))
        (let ((mark-even-if-inactive transient-mark-mode))
          (indent-region (region-beginning) (region-end))
