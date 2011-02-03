@@ -321,6 +321,7 @@ You should also set `kill-whole-line' to do what you want.
             (when (looking-at "[ \t]+")
               (replace-match " ")))))
       (indent-region (region-beginning) (region-end))
+      (indent-according-to-mode)
       (if auto-indent-mode-untabify-on-yank-or-paste
           (untabify (region-beginning) (region-end))))))
 
@@ -340,6 +341,7 @@ You should also set `kill-whole-line' to do what you want.
             (when (looking-at "[ \t]+")
               (replace-match " ")))))
       (indent-region (region-beginning) (region-end))
+      (indent-according-to-mode)
       (if auto-indent-mode-untabify-on-yank-or-paste
           (untabify (region-beginning) (region-end))))))
 
