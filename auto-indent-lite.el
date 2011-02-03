@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Thu Feb  3 10:37:55 2011 (+0800)
+;; Last-Updated: Thu Feb  3 13:30:18 2011 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 480
+;;     Update #: 481
 ;; URL: Keywords: Auto Indentation Compatibility: Tested with Emacs 23.2.1
 ;;
 ;; Features that might be required by this library:
@@ -313,6 +313,13 @@ You should also set `kill-whole-line' to do what you want.
              (not current-prefix-arg)
              (not (minibufferp)))
     (let ((mark-even-if-inactive transient-mark-mode))
+      (when auto-indent-delete-line-char-remove-extra-spaces
+        (save-excursion
+          (goto-char(mark t))
+          (save-excursion
+            (skip-chars-backward " \t")
+            (when (looking-at "[ \t]+")
+              (replace-match " ")))))
       (indent-region (region-beginning) (region-end))
       (if auto-indent-mode-untabify-on-yank-or-paste
           (untabify (region-beginning) (region-end))))))
@@ -325,6 +332,13 @@ You should also set `kill-whole-line' to do what you want.
              (not current-prefix-arg)
              (not (minibufferp)))
     (let ((mark-even-if-inactive transient-mark-mode))
+      (when auto-indent-delete-line-char-remove-extra-spaces
+        (save-excursion
+          (goto-char(mark t))
+          (save-excursion
+            (skip-chars-backward " \t")
+            (when (looking-at "[ \t]+")
+              (replace-match " ")))))
       (indent-region (region-beginning) (region-end))
       (if auto-indent-mode-untabify-on-yank-or-paste
           (untabify (region-beginning) (region-end))))))
