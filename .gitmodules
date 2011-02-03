@@ -7,3 +7,6 @@
 [submodule "whole-line-funcs"]
 	path = whole-line-funcs
 	url = git@github.com:lewang/le_emacs_whole_line_funcs.git
+[submodule "rebox2"]
+	path = rebox2
+	url = git@github.com:lewang/rebox2.git
