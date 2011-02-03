@@ -9,9 +9,9 @@
 ;; Copyright (c) 2006, 2011 Le Wang
 
 ;; Version: 0.2
-;; Last-Updated: Wed Feb  2 16:41:54 2011 (+0800)
+;; Last-Updated: Thu Feb  3 16:58:56 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 2
+;;     Update #: 3
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/LRU-yank.el
 ;; Keywords:
 ;; Compatibility: GNU Emacs 21, 23.2.1
@@ -41,21 +41,30 @@
 ;; recently used (inserted) stuff are always at the top -- think alt-tab in
 ;; Windows.
 ;;
-;;
-;; Installation:
-;;
+;; Before using this package, you should try M-- M-y (negative prefix arg to
+;; yank-pop), as it may already do what you want.
+
+       ;;,----
+       ;;| ** When you use this package, realize that you are deciding to
+       ;;|     prioritize "time of last use" over "time of introduction into
+       ;;|     kill-ring".
+       ;;| ** You actually lose the "time of addition into kill-ring"
+       ;;|     information, because this library actively modifies the
+       ;;|     kill-ring.
+       ;;`----
+
+;;; Installation:
+
 ;;   Put this file into your load-path and the following into your
 ;;   ~/.emacs:
 ;;
 ;;   (require 'LRU-yank)
 ;;   (setq LRU-yank-mode t)
-;;
-;;
-;; Related packages:
-;;
-;;  `buffer-stack'
-;;  `bubble'
-;;
+
+;;; Related packages:
+
+;;  * `buffer-stack'
+;;  * `bubble'
 
 
 ;;; Code:

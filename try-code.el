@@ -1,17 +1,13 @@
-;;; try-code.el ---
-;;
-;; Filename: try-code.el
-;; Description:
-;; Author: Le Wang
-;; Maintainer: Le Wang
+;;; try-code.el --- try out a new idea by commenting out old code
 
+;; Filename: try-code.el Description: Author: Le Wang Maintainer: Le Wang\
 ;; Created: Wed Feb  2 23:09:17 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Thu Feb  3 14:08:00 2011 (+0800)
+;; Last-Updated: Thu Feb  3 17:03:23 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 16
-;; URL:
-;; Keywords:
+;;     Update #: 17
+;; URL: https://github.com/lewang/le_emacs_libs/blob/master/try-code.el
+;; Keywords: programming language modes
 ;; Compatibility:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
