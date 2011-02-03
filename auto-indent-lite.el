@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Wed Feb  2 23:27:14 2011 (+0800)
+;; Last-Updated: Thu Feb  3 10:37:55 2011 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 469
+;;     Update #: 480
 ;; URL: Keywords: Auto Indentation Compatibility: Tested with Emacs 23.2.1
 ;;
 ;; Features that might be required by this library:
@@ -305,24 +305,39 @@ You should also set `kill-whole-line' to do what you want.
   :tag " Major modes where linum is disabled: "
   :group 'auto-indent)
 
-(defmacro auto-indent-advice-command (command)
-  "Define advices for yank and yank-pop."
-  `(defadvice ,command (after auto-indent-mode-advice activate)
-     (when (and auto-indent-mode
-                (memq major-mode auto-indent-disabled-modes-list)
-                (not current-prefix-arg)
-                (not (minibufferp)))
-       (let ((mark-even-if-inactive transient-mark-mode))
-         (indent-region (region-beginning) (region-end))
-         (if auto-indent-mode-untabify-on-yank-or-paste
-             (untabify (region-beginning) (region-end)))))))
+(defadvice yank (after auto-indent-mode-advice activate)
+  (when (and auto-indent-mode
+             (or (called-interactively-p 'any)
+                 (memq this-command (list (key-binding [(control y)]) 'yank)))
+             (not (memq major-mode auto-indent-disabled-modes-list))
+             (not current-prefix-arg)
+             (not (minibufferp)))
+    (let ((mark-even-if-inactive transient-mark-mode))
+      (indent-region (region-beginning) (region-end))
+      (if auto-indent-mode-untabify-on-yank-or-paste
+          (untabify (region-beginning) (region-end))))))
 
-(auto-indent-advice-command yank)
-(auto-indent-advice-command yank-pop)
+(defadvice yank-pop (after auto-indent-mode-advice activate)
+  (when (and auto-indent-mode
+             (or (called-interactively-p 'any)
+                 (memq this-command (list (key-binding [(meta y)]) 'yank)))
+             (not (memq major-mode auto-indent-disabled-modes-list))
+             (not current-prefix-arg)
+             (not (minibufferp)))
+    (let ((mark-even-if-inactive transient-mark-mode))
+      (indent-region (region-beginning) (region-end))
+      (if auto-indent-mode-untabify-on-yank-or-paste
+          (untabify (region-beginning) (region-end))))))
 
 (defadvice delete-char (around auto-indent-mode activate)
-  "If at the end of the line, take out whitespace after deleting character"
-  (if (called-interactively-p 'any)
+  "If at the end of the line, take out whitespace after deleting character
+
+This advice only works when you press the key mapped to
+delete-char.  The behaviour of delete-char shouldn't be changed
+in non-interactive calls.
+"
+  (if (or (called-interactively-p 'any)
+          (eq (key-binding [delete]) this-command))
       (let ((del-eol (eolp)))
         ad-do-it
         (when (and del-eol
@@ -377,7 +392,8 @@ If at end of line, obey `auto-indent-kill-line-at-eol'
                   ad-do-it
                   )))
           ad-do-it)
-        (indent-according-to-mode))
+        (when (not (memq major-mode auto-indent-disabled-modes-list))
+          (indent-according-to-mode)))
     ad-do-it))
 
 (defun auto-indent-eolp ()
