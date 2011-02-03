@@ -7,19 +7,25 @@
 
 ;; Created: Wed Feb  2 23:09:17 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Wed Feb  2 23:33:28 2011 (+0800)
+;; Last-Updated: Thu Feb  3 14:08:00 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 14
+;;     Update #: 16
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+
+;;; installation:
+
+;;           (autoload 'try-code "try-code"  nil t)
+;;           (global-set-key [(control \?)] 'try-code)
+
 ;;; Commentary:
-;;
-;;
-;;
+
+;; Comments out a chunk of code to allow you to try some new code.  When you
+;; reinvoke the function in the old or new section, you can choose which one
+;; to keep.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -134,7 +140,7 @@ still respected."
       (concat
        try-code-end-string
        (try-code-fill-string
-         nil ">" (- try-code-fill-length (length try-code-end-string)) t)))
+         nil "<" (- try-code-fill-length (length try-code-end-string)) t)))
 
 (defun try-code-get-char (prompt accept-string)
   "repeatedly read chars until getting one in accept-string.
@@ -478,7 +484,7 @@ User is offered a choice of which to keep."
             (signal (car err) (cdr err))))))
 
 ;;;###autoload
-(defun try-code-comment-code ()
+(defun try-code ()
 
 "comments out a piece of code and prepares to edit some experimental code.
 
