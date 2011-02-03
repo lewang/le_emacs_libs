@@ -3,9 +3,9 @@
 ;; Filename: try-code.el Description: Author: Le Wang Maintainer: Le Wang\
 ;; Created: Wed Feb  2 23:09:17 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Thu Feb  3 17:03:23 2011 (+0800)
+;; Last-Updated: Thu Feb  3 17:54:47 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 17
+;;     Update #: 18
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/try-code.el
 ;; Keywords: programming language modes
 ;; Compatibility:
@@ -22,6 +22,9 @@
 ;; Comments out a chunk of code to allow you to try some new code.  When you
 ;; reinvoke the function in the old or new section, you can choose which one
 ;; to keep.
+;;
+;; To try it out, select some code in any programming mode buffer, press C-?,
+;; add some "test code" and press C-? again.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
