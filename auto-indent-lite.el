@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Thu Feb  3 23:55:04 2011 (+0800)
+;; Last-Updated: Fri Feb  4 12:13:08 2011 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 484
+;;     Update #: 485
 ;; URL: Keywords: Auto Indentation Compatibility: Tested with Emacs 23.2.1
 ;;
 ;; Features that might be required by this library:
@@ -313,13 +313,9 @@ You should also set `kill-whole-line' to do what you want.
              (not current-prefix-arg)
              (not (minibufferp)))
     (let ((mark-even-if-inactive transient-mark-mode))
-      (when auto-indent-delete-line-char-remove-extra-spaces
-        (save-excursion
-          (goto-char(mark t))
-          (save-excursion
-            (skip-chars-backward " \t")
-            (when (looking-at "[ \t]+")
-              (replace-match " ")))))
+      (when auto-indent-use-text-boundaries
+          (goto-char (mark))
+          (backward-delete-char (skip-chars-forward " \t")))
       (indent-region (region-beginning) (region-end))
       (indent-according-to-mode)
       (if auto-indent-mode-untabify-on-yank-or-paste
@@ -333,13 +329,9 @@ You should also set `kill-whole-line' to do what you want.
              (not current-prefix-arg)
              (not (minibufferp)))
     (let ((mark-even-if-inactive transient-mark-mode))
-      (when auto-indent-delete-line-char-remove-extra-spaces
-        (save-excursion
-          (goto-char(mark t))
-          (save-excursion
-            (skip-chars-backward " \t")
-            (when (looking-at "[ \t]+")
-              (replace-match " ")))))
+      (when auto-indent-use-text-boundaries
+        (goto-char (mark))
+        (backward-delete-char (skip-chars-forward " \t")))
       (indent-region (region-beginning) (region-end))
       (indent-according-to-mode)
       (if auto-indent-mode-untabify-on-yank-or-paste
