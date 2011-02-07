@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Fri Feb  4 12:13:08 2011 (+0800)
+;; Last-Updated: Mon Feb  7 01:44:31 2011 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 485
+;;     Update #: 487
 ;; URL: Keywords: Auto Indentation Compatibility: Tested with Emacs 23.2.1
 ;;
 ;; Features that might be required by this library:
@@ -314,8 +314,10 @@ You should also set `kill-whole-line' to do what you want.
              (not (minibufferp)))
     (let ((mark-even-if-inactive transient-mark-mode))
       (when auto-indent-use-text-boundaries
+        (let ((orig-m (point-marker)))
           (goto-char (mark))
-          (backward-delete-char (skip-chars-forward " \t")))
+          (backward-delete-char (skip-chars-forward " \t"))
+          (goto-char orig-m)))
       (indent-region (region-beginning) (region-end))
       (indent-according-to-mode)
       (if auto-indent-mode-untabify-on-yank-or-paste
@@ -330,8 +332,10 @@ You should also set `kill-whole-line' to do what you want.
              (not (minibufferp)))
     (let ((mark-even-if-inactive transient-mark-mode))
       (when auto-indent-use-text-boundaries
-        (goto-char (mark))
-        (backward-delete-char (skip-chars-forward " \t")))
+        (let ((orig-m (point-marker)))
+          (goto-char (mark))
+          (backward-delete-char (skip-chars-forward " \t"))
+          (goto-char orig-m)))
       (indent-region (region-beginning) (region-end))
       (indent-according-to-mode)
       (if auto-indent-mode-untabify-on-yank-or-paste
