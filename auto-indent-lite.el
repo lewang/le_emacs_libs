@@ -356,10 +356,7 @@ in non-interactive calls.
                    auto-indent-mode
                    (not (minibufferp))
                    auto-indent-delete-line-char-remove-extra-spaces)
-          (save-excursion
-            (skip-chars-backward " \t")
-            (when (looking-at "[ \t]+")
-              (replace-match " ")))
+          (fixup-whitespace)
           (when (and (eolp) (looking-back "[ \t]+" nil t))
             (replace-match ""))))
     ad-do-it))
