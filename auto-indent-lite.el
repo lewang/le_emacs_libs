@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Mon Feb  7 01:44:31 2011 (+0800)
+;; Last-Updated: Sat Feb 12 22:38:59 2011 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 487
+;;     Update #: 489
 ;; URL: Keywords: Auto Indentation Compatibility: Tested with Emacs 23.2.1
 ;;
 ;; Features that might be required by this library:
@@ -269,11 +269,11 @@
   :type 'boolean
   :group 'auto-indent)
 
-(defcustom auto-indent-kill-line-at-eol nil
+(defcustom auto-indent-kill-line-at-eol 'whole-line
   "* When killing lines, if at the end of a line,
 
 nil - join next line to the current line. Deletes whitespace at
-      join.
+      join.  [this essentially duplicated delete-char]
       See also `auto-indent-kill-line-remove-extra-spaces'
 whole-lines - kill next lines
 blanks - kill all empty lines after the current line, and then
