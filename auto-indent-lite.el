@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Mon Feb 28 11:33:39 2011 (+0800)
+;; Last-Updated: Mon Feb 28 12:00:07 2011 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 491
+;;     Update #: 492
 ;; URL: Keywords: Auto Indentation Compatibility: Tested with Emacs 23.2.1
 ;;
 ;; Features that might be required by this library:
@@ -269,7 +269,7 @@
   :type 'boolean
   :group 'auto-indent)
 
-(defcustom auto-indent-kill-line-at-eol 'whole-line
+(defcustom auto-indent-kill-line-at-eol 'subsequent-whole-line
   "* When killing lines, if at the end of a line,
 
 nil - join next line to the current line. Deletes whitespace at
@@ -284,6 +284,7 @@ You should also set `kill-whole-line' to do what you want.
 "
   :type '(choice (const :tag "default" nil)
                  (const :tag "next whole line" whole-line)
+                 (const :tag "merge lines on first call, subsequent kill whole lines" subsequent-whole-line)
                  (const :tag "next whole line after any blank lines" blanks))
   :group 'auto-indent)
 
@@ -392,9 +393,17 @@ If at end of line, obey `auto-indent-kill-line-at-eol'
                     ad-do-it)
                 (if (auto-indent-eolp)
                     (cond ((eq auto-indent-kill-line-at-eol nil)
-                           (if(= (prefix-numeric-value current-prefix-arg) 1)
+                           (if (= (prefix-numeric-value current-prefix-arg) 1)
                                (delete-indentation 't)
                              ad-do-it))
+                          ((eq auto-indent-kill-line-at-eol 'subsequent-whole-line)
+                           (let (auto-indent-kill-line-at-eol)
+                             (if (eq last-command 'kill-line)
+                                 (progn
+                                   (setq auto-indent-kill-line-at-eol 'whole-line)
+                                   (call-interactively 'kill-line))
+                               (setq auto-indent-kill-line-at-eol nil)
+                               (call-interactively 'kill-line))))
                           ((memq auto-indent-kill-line-at-eol '(whole-line blanks))
                            (if (> (prefix-numeric-value current-prefix-arg) 0)
                                (save-excursion
