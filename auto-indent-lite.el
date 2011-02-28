@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Sat Feb 12 22:38:59 2011 (+0800)
+;; Last-Updated: Mon Feb 28 11:28:38 2011 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 489
+;;     Update #: 490
 ;; URL: Keywords: Auto Indentation Compatibility: Tested with Emacs 23.2.1
 ;;
 ;; Features that might be required by this library:
@@ -299,7 +299,19 @@ You should also set `kill-whole-line' to do what you want.
   :type 'boolean
   :group 'auto-indent)
 
-(defcustom auto-indent-disabled-modes-list '(eshell-mode wl-summary-mode compilation-mode org-mode text-mode dired-mode snippet-mode fundamental-mode diff-mode texinfo-mode conf-windows-mode)
+(defcustom auto-indent-disabled-modes-list
+  '(eshell-mode
+    wl-summary-mode
+    compilation-mode
+    org-mode
+    text-mode
+    dired-mode
+    snippet-mode
+    fundamental-mode
+    diff-mode
+    texinfo-mode
+    conf-windows-mode
+    yaml-mode)
   "* List of modes disabled when global auto-indent-mode is on."
   :type '(repeat (sexp :tag "Major mode"))
   :tag " Major modes where linum is disabled: "
