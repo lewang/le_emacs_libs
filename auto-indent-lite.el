@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Mon Feb 28 12:00:07 2011 (+0800)
+;; Last-Updated: Wed Mar  2 13:35:17 2011 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 492
+;;     Update #: 494
 ;; URL: Keywords: Auto Indentation Compatibility: Tested with Emacs 23.2.1
 ;;
 ;; Features that might be required by this library:
@@ -380,7 +380,7 @@ If at end of line, obey `auto-indent-kill-line-at-eol'
 "
   (if (or (called-interactively-p 'any)
           (memq this-command (list (key-binding [(control k)]))))
-      (progn
+      (let ((this-command this-command))
         (if (and auto-indent-mode
                  (not (minibufferp)))
             (if (and auto-indent-kill-line-kill-region-when-active
@@ -398,7 +398,7 @@ If at end of line, obey `auto-indent-kill-line-at-eol'
                              ad-do-it))
                           ((eq auto-indent-kill-line-at-eol 'subsequent-whole-line)
                            (let (auto-indent-kill-line-at-eol)
-                             (if (eq last-command 'kill-line)
+                             (if (eq last-command this-command)
                                  (progn
                                    (setq auto-indent-kill-line-at-eol 'whole-line)
                                    (call-interactively 'kill-line))
