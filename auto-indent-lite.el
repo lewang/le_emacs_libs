@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Wed Mar  2 23:46:07 2011 (+0800)
+;; Last-Updated: Sat Mar 12 16:02:54 2011 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 495
+;;     Update #: 497
 ;; URL: Keywords: Auto Indentation Compatibility: Tested with Emacs 23.2.1
 ;;
 ;; Features that might be required by this library:
@@ -382,16 +382,27 @@ Kill backwards if UNIVERSAL ARG C-u is passed.
 
 If at end of line, obey `auto-indent-kill-line-at-eol'
 
+Consecutive kill-lines cause lines to be appended to last kill.
+
 "
   (if (and auto-indent-mode
              (not (minibufferp))
              (or (called-interactively-p 'any)
                  (memq this-command (list (key-binding [(control k)])))))
-      (let ((this-command this-command))
+      (let ((real-this-command this-command)
+            ;; we don't want any functions we call to change
+            (this-command this-command)
+            ;; may be modified by (apend-next-kill)
+            (last-command last-command)
+            (ad-get-arg-0-int (prefix-numeric-value (ad-get-arg 0))))
+        (when (memq real-this-command (list last-command 'kill-line))
+          ;; this may change this-command to 'kill-region
+          (append-next-kill))
+
         (cond ((and auto-indent-kill-line-kill-region-when-active
                     (use-region-p))
                (kill-region (region-beginning) (region-end)))
-              ((and current-prefix-arg (listp current-prefix-arg))
+              ((and (ad-get-arg 0) (listp (ad-get-arg 0)))
                (if (auto-indent-bolp)
                    (ad-set-arg 0 -1)
                  (ad-set-arg 0 0))
@@ -401,37 +412,38 @@ If at end of line, obey `auto-indent-kill-line-at-eol'
                ad-do-it)
               ((auto-indent-eolp)
                (cond ((eq auto-indent-kill-line-at-eol nil)
-                      (if (= (prefix-numeric-value current-prefix-arg) 1)
+                      (if (= ad-get-arg-0-int 1)
                           (delete-indentation 't)
                         ad-do-it))
                      ((eq auto-indent-kill-line-at-eol 'subsequent-whole-line)
                       (let (auto-indent-kill-line-at-eol)
-                        (if (eq last-command this-command)
+                        (if (memq last-command '(kill-region real-this-command))
                             (progn
                               (setq auto-indent-kill-line-at-eol 'whole-line)
-                              (call-interactively 'kill-line))
+                              (kill-line (ad-get-arg 0)))
                           (setq auto-indent-kill-line-at-eol nil)
-                          (call-interactively 'kill-line))))
+                          (kill-line (ad-get-arg 0)))))
                      ((memq auto-indent-kill-line-at-eol '(whole-line blanks))
-                      (if (> (prefix-numeric-value current-prefix-arg) 0)
-                          (save-excursion
+                      (if (> (prefix-numeric-value (ad-get-arg 0)) 0)
+                          (progn
                             (delete-region (point) (point-at-eol))
                             (unless (eobp)
-                              (forward-line 1)
-                              (when (eq auto-indent-kill-line-at-eol 'blanks)
-                                (kill-region (point) (+ (point)
-                                                        (skip-chars-forward " \t\n")
-                                                        (skip-chars-backward " \t"))))
-                              ad-do-it))
-                        ad-do-it))
+                              (kill-region (point)
+                                           (if (eq auto-indent-kill-line-at-eol 'blanks)
+                                               (+ (point)
+                                                  (skip-chars-forward " \t\n")
+                                                  (skip-chars-backward " \t")
+                                                  ;;
+                                                  -1)
+                                             (point-at-eol (1+ ad-get-arg-0-int))))))))
                      (t
                       (error "invalid auto-indent-kill-line-at-eol setting %s"
                              auto-indent-kill-line-at-eol))))
               (t
                ad-do-it))
-              (when (not (memq major-mode auto-indent-disabled-modes-list))
-                (indent-according-to-mode)))
-          ad-do-it))
+        (when (not (memq major-mode auto-indent-disabled-modes-list))
+          (indent-according-to-mode)))
+    ad-do-it))
 
 (defun auto-indent-eolp ()
   "returns t if point is at eol respecting `auto-indent-use-text-boundaries'"
