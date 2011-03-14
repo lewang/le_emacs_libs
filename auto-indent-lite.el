@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Sat Mar 12 16:02:54 2011 (+0800)
+;; Last-Updated: Mon Mar 14 20:11:06 2011 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 497
+;;     Update #: 498
 ;; URL: Keywords: Auto Indentation Compatibility: Tested with Emacs 23.2.1
 ;;
 ;; Features that might be required by this library:
@@ -389,13 +389,9 @@ Consecutive kill-lines cause lines to be appended to last kill.
              (not (minibufferp))
              (or (called-interactively-p 'any)
                  (memq this-command (list (key-binding [(control k)])))))
-      (let ((real-this-command this-command)
-            ;; we don't want any functions we call to change
-            (this-command this-command)
-            ;; may be modified by (apend-next-kill)
-            (last-command last-command)
+      (let ((last-command last-command)
             (ad-get-arg-0-int (prefix-numeric-value (ad-get-arg 0))))
-        (when (memq real-this-command (list last-command 'kill-line))
+        (when (memq this-command (list last-command))
           ;; this may change this-command to 'kill-region
           (append-next-kill))
 
@@ -413,11 +409,22 @@ Consecutive kill-lines cause lines to be appended to last kill.
               ((auto-indent-eolp)
                (cond ((eq auto-indent-kill-line-at-eol nil)
                       (if (= ad-get-arg-0-int 1)
-                          (delete-indentation 't)
+                          (let ((old-point (point-marker))
+                                kill-char-count)
+                            (kill-region (point)
+                                         (progn
+                                           (goto-char (point-at-bol 2))
+                                           (skip-chars-forward " \t")
+                                           (setq kill-char-count (- (point) old-point))
+                                           (point)))
+                            (goto-char old-point)
+                            (when (> kill-char-count 1)
+                              (insert " ")
+                              (backward-char 1)))
                         ad-do-it))
                      ((eq auto-indent-kill-line-at-eol 'subsequent-whole-line)
                       (let (auto-indent-kill-line-at-eol)
-                        (if (memq last-command '(kill-region real-this-command))
+                        (if (memq last-command (list 'kill-region this-command))
                             (progn
                               (setq auto-indent-kill-line-at-eol 'whole-line)
                               (kill-line (ad-get-arg 0)))
