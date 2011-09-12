@@ -11,9 +11,9 @@
 
 ;; Created: Tue Sep 13 01:04:33 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Tue Sep 13 01:14:15 2011 (+0800)
+;; Last-Updated: Tue Sep 13 01:18:48 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 3
+;;     Update #: 4
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/le-eval-and-insert-results.el
 ;; Keywords: emacs-lisp evaluation
 ;; Compatibility: Emacs 23+
@@ -27,11 +27,11 @@
 
 ;;; Commentary:
 
-;; Simple function to evaluate buffer and inline results of each form as a
-;; comment.
+;; Simple function to evaluate buffer and inline results of each top-level
+;; form as a comment.
 ;;
-;; This is basically batch ielm, that updates.  I find it useful when
-;; experimenting with stuff.
+;; This is basically batch ielm.  I find it useful when experimenting with
+;; stuff.
 ;;
 ;; Function is reentrant, and should update results each time.
 ;;
