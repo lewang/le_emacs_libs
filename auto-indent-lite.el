@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Mon Mar 14 20:11:06 2011 (+0800)
+;; Last-Updated: Tue Sep 13 00:45:09 2011 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 498
+;;     Update #: 499
 ;; URL: Keywords: Auto Indentation Compatibility: Tested with Emacs 23.2.1
 ;;
 ;; Features that might be required by this library:
@@ -288,11 +288,6 @@ You should also set `kill-whole-line' to do what you want.
                  (const :tag "next whole line after any blank lines" blanks))
   :group 'auto-indent)
 
-(defcustom auto-indent-kill-line-kill-region-when-active t
-  "* When killing lines, if region is active, kill region instead."
-  :type 'boolean
-  :group 'auto-indent)
-
 (defcustom auto-indent-use-text-boundaries nil
   "* When killing lines, if point is before any text, act as if
   point is at BOL.  And if point is after text, act as if point
@@ -395,7 +390,7 @@ Consecutive kill-lines cause lines to be appended to last kill.
           ;; this may change this-command to 'kill-region
           (append-next-kill))
 
-        (cond ((and auto-indent-kill-line-kill-region-when-active
+        (cond ((and delete-selection-mode
                     (use-region-p))
                (kill-region (region-beginning) (region-end)))
               ((and (ad-get-arg 0) (listp (ad-get-arg 0)))
