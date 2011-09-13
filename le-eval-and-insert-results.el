@@ -11,9 +11,9 @@
 
 ;; Created: Tue Sep 13 01:04:33 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Tue Sep 13 01:18:48 2011 (+0800)
+;; Last-Updated: Wed Sep 14 02:09:07 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 4
+;;     Update #: 5
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/le-eval-and-insert-results.el
 ;; Keywords: emacs-lisp evaluation
 ;; Compatibility: Emacs 23+
@@ -90,7 +90,7 @@ Calling repeatedly should update results."
                         "\n"))
                (result-length (length result)))
           (goto-char (point-at-bol 2))
-          (if (bolp)                    ; handle eob
+          (if (eobp)                    ; handle eob
               (when (looking-at "\t;; ⇒.*\n\\(?:\t;; .*\n\\)*")
                 (delete-region (point) (match-end 0))
                 (setq end (- end (- (match-end 0) (point)))))
