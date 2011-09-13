@@ -13,3 +13,9 @@
 [submodule "xargs-grep"]
 	path = xargs-grep
 	url = git@github.com:lewang/le_emacs_xargs_grep.git
+[submodule "backup-walker"]
+	path = backup-walker
+	url = git@github.com:lewang/backup-walker.git
+[submodule "e-sink"]
+	path = e-sink
+	url = git@github.com:lewang/e-sink.git
