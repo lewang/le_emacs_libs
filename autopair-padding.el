@@ -11,9 +11,9 @@
 
 ;; Created: Fri Sep 16 19:26:30 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Fri Sep 16 21:35:00 2011 (+0800)
+;; Last-Updated: Fri Sep 16 21:41:29 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 5
+;;     Update #: 6
 ;; URL:
 ;; Keywords:
 ;; Compatibility: Emacs 23+
@@ -112,7 +112,8 @@ closing padded delimiter properly."
                    (replace-match "" nil nil nil 1)
                    (setq touched t)))
                ;; move past close-delim
-               (when touched
+               (when (and touched
+                          (not autopair-skip-whitespace))
                  (forward-char))))))))
 
 
