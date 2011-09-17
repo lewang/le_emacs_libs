@@ -11,9 +11,9 @@
 
 ;; Created: Tue Sep 13 01:04:33 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Wed Sep 14 02:33:37 2011 (+0800)
+;; Last-Updated: Sat Sep 17 17:42:13 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 7
+;;     Update #: 8
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/le-eval-and-insert-results.el
 ;; Keywords: emacs-lisp evaluation
 ;; Compatibility: Emacs 23+
@@ -79,10 +79,10 @@ Calling repeatedly should update results."
       (forward-sexp 1)
       (when (<= (point) end)
         (let* ((result (concat
-                        "\t;; ⇒ "
+                        "\t;;; ⇒ "
                         (replace-regexp-in-string
                          "\n"
-                         "\n\t;; "
+                         "\n\t;;; "
                          (prin1-to-string
                           (eval
                            (read
@@ -96,9 +96,9 @@ Calling repeatedly should update results."
               (insert "\n")
             (when (looking-at (concat "\\(?:\t\\|"
                                       tab-space
-                                      "\\);; ⇒.*\n?\\(?:\\(\t\\|"
+                                      "\\);;; ⇒.*\n?\\(?:\\(\t\\|"
                                       tab-space
-                                      "\\);; .*\n\\)*"))
+                                      "\\);;; .*\n\\)*"))
               (delete-region (point) (match-end 0))
               (setq end (- end (- (match-end 0) (point))))))
           (insert result)
