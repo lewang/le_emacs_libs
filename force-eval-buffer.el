@@ -1,3 +1,6 @@
+;; URL: https://github.com/lewang/le_emacs_libs/blob/master/force-eval-buffer.el
+;;
+;;
 ;; this evaluates a buffer, but changing all variable definition to setq to
 ;; force reevaluation.  It's useful if you want to reset to a library's
 ;; defaults without restarting Emacs

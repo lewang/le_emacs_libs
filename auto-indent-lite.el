@@ -6,12 +6,16 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Tue Sep 13 00:45:09 2011 (+0800)
+;; Last-Updated: Mon Sep 19 02:10:00 2011 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 499
-;; URL: Keywords: Auto Indentation Compatibility: Tested with Emacs 23.2.1
+;;     Update #: 500
+;;
+;; URL: https://github.com/lewang/le_emacs_libs/blob/master/auto-indent-lite.el
+;;
+;;
+;; Keywords: Auto Indentation Compatibility: Tested with Emacs 23.2.1
 ;;
 ;; Features that might be required by this library:
 ;;

@@ -11,10 +11,11 @@
 
 ;; Created: Fri Sep 16 19:26:30 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Fri Sep 16 21:41:29 2011 (+0800)
+;; Last-Updated: Mon Sep 19 02:10:22 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 6
-;; URL:
+;;     Update #: 7
+;;          URL: https://github.com/lewang/le_emacs_libs/blob/master/autopair-padding.el
+;;
 ;; Keywords:
 ;; Compatibility: Emacs 23+
 
