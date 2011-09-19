@@ -1,14 +1,22 @@
 ;;; keep-buffers.el -- Attempt to prevent named buffers from deletion.
 
 ;; Copyright (C) 2000 Steve Kemp
-;; Copyright (C) 2011  Le Wang
+;; Copyright (C) 2011 Le Wang
 
 ;; Author: Steve Kemp <skx@tardis.ed.ac.uk>
-;; Maintainer: skx@tardis.ed.ac.uk
+;;
+;; Maintainer: Le Wang
+;;
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/keep-buffers.el
+;;
 ;; Keywords: extensions
-;; Status: Tested with NT Emacs 20.[45].1
+;;
+;; Status: Tested with Emacs 23.3+
+;;
 ;; Created: 20/01/2000
+;;
+;; Last-Updated: Mon Sep 19 12:05:28 2011 (+0800)
+;;           By: Le Wang
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -39,14 +47,14 @@
 ;;
 ;; Simple Install:
 ;;
-;;  (require 'keep-buffers)                     ;; Load the package.
+;;   (require 'keep-buffers)                     ;; Load the package.
 ;;
 ;;
 ;; By default, "*scratch*" is protected and erased when killed, "*Messages*"
 ;; is never killed or erased.  You can customize easily using elisp:
 ;;
-;;  ;; protect all buffers starting with "*scratch"
-;;  (push '("\\`*scratch" . erase) keep-buffers-protected-list)
+;;   ;; protect all buffers starting with "*scratch"
+;;   (push '("\\`*scratch" . erase) keep-buffers-protected-list)
 ;;
 ;;
 ;; Customize:
@@ -87,8 +95,8 @@
     ("\\`\\*Messages\\*\\'" . nil))
   "an alist '((\"regex1\" . 'erase) (\"regex2\" . nil))
 
-CAR of each cons lists the buffer matching regexp, if CDR of a
-cons is not nil then it's erased then buried.
+CAR of each cons cell is the buffer matching regexp.  If CDR is
+not nil then the matching buffer is erased then buried.
 
 If the CDR is nil, then the buffer is only buried."
   :type '(alist)
@@ -97,7 +105,7 @@ If the CDR is nil, then the buffer is only buried."
 
 ;;;###autoload
 (defun keep-buffers-query ()
-  "The query function that disable deletion of buffers we have protected."
+  "The query function that disable deletion of buffers we protect."
   (let ((crit (some (lambda (crit)
                       (when (string-match (car crit) (buffer-name))
                         crit))
