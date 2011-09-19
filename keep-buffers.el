@@ -1,7 +1,7 @@
 ;;; keep-buffers.el -- Attempt to prevent named buffers from deletion.
 
 ;; Copyright (C) 2000 Steve Kemp
-;; Copyright (C) 201  Le Wang
+;; Copyright (C) 2011  Le Wang
 
 ;; Author: Steve Kemp <skx@tardis.ed.ac.uk>
 ;; Maintainer: skx@tardis.ed.ac.uk
