@@ -15,7 +15,7 @@
 ;;
 ;; Created: 20/01/2000
 ;;
-;; Last-Updated: Mon Sep 19 12:05:28 2011 (+0800)
+;; Last-Updated: Mon Sep 19 13:02:40 2011 (+0800)
 ;;           By: Le Wang
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -48,6 +48,7 @@
 ;; Simple Install:
 ;;
 ;;   (require 'keep-buffers)                     ;; Load the package.
+;;   (keep-buffers-minor-mode 1)
 ;;
 ;;
 ;; By default, "*scratch*" is protected and erased when killed, "*Messages*"
@@ -81,14 +82,26 @@
 ;;
 ;;                   * removed redundant `find-in-list' see `member'
 ;;
+;;   Version 1.4 -- (Le Wang)
+;;
+;;                   * changed into prope global minor mode
+;;
+;;
 
 ;;; Code:
 
-(defgroup keep-buffers nil
-  "Disable deletion of certain buffers."
-  :tag "keep-buffers"
-  :group 'convenience
-  )
+(define-minor-mode keep-buffers-minor-mode
+  "when active, killing protected buffers results in burying them instead.
+Some may also be erased, which is undo-able."
+  :init-value nil
+  :global t
+  :group 'keep-buffers
+  :lighter ""
+  :version "1.4"
+  (if keep-buffers-minor-mode
+      ;; Setup the hook
+      (add-hook 'kill-buffer-query-functions 'keep-buffers-query)
+    (remove-hook 'kill-buffer-query-functions 'keep-buffers-query)))
 
 (defcustom keep-buffers-protected-alist
   '(("\\`\\*scratch\\*\\'" . erase)
@@ -102,6 +115,7 @@ If the CDR is nil, then the buffer is only buried."
   :type '(alist)
   :group 'keep-buffers
   )
+
 
 ;;;###autoload
 (defun keep-buffers-query ()
@@ -117,9 +131,6 @@ If the CDR is nil, then the buffer is only buried."
           (bury-buffer)
           nil)
       t)))
-
-;; Setup the hook
-(add-hook 'kill-buffer-query-functions 'keep-buffers-query)
 
 
 (provide 'keep-buffers)
