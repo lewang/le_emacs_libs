@@ -33,37 +33,43 @@
 ;; There are two ways you can use this package to protect buffers, either via
 ;; the customize interface, or via Lisp.
 ;;
-;; Via Lisp:
+
+;;; Installation:
+
+;;
+;; Simple Install:
 ;;
 ;;  (require 'keep-buffers)                     ;; Load the package.
 ;;
 ;;
-
+;; By default, "*scratch*" is protected and erased when killed, "*Messages*"
+;; is never killed or erased.  You can customize easily using elisp:
 ;;
-;;  Via Customize:
+;;  ;; protect all buffers starting with "*scratch"
+;;  (push '("\\`*scratch" . erase) keep-buffers-protected-list)
+;;
+;;
+;; Customize:
 ;;
 ;;   M-x customize-group
 ;;   keep-buffers
 ;;
-;;   Then simply insert the names of the buffers that you'd like protected in
-;; the appropriate field.
-;;   (This will only take effect if you have (require 'keep-buffers) in your .emacs file)
 
 ;;; History:
 ;;
-;;   Version 1.0  -- Initial version.
+;;   Version 1.0 -- Initial version.
 ;;
-;;   Version 1.1  -- Added the customize entries.
+;;   Version 1.1 -- Added the customize entries.
 ;;
-;;   Version 1.2  -- Added the keep-buffers-erase-on-kill function.
+;;   Version 1.2 -- Added the keep-buffers-erase-on-kill function.
 ;;
-;;   Version 1.3  -- (Le Wang)
+;;   Version 1.3 -- (Le Wang)
 ;;
-;;                   * erased lots useless helper functions.  people are
+;;                   * erased lots of useless helper functions.  people are
 ;;                     either going to use customize or elisp.
 ;;
-;;                   * made `keep-buffers-protected-list' an alist so
-;;                     each buffer can specify whether it should be erased.
+;;                   * made `keep-buffers-protected-list' an alist so each
+;;                     buffer can specify whether it should be erased.
 ;;
 ;;                   * removed redundant `find-in-list' see `member'
 ;;
