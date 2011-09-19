@@ -15,7 +15,7 @@
 ;;
 ;; Created: 20/01/2000
 ;;
-;; Last-Updated: Mon Sep 19 13:02:40 2011 (+0800)
+;; Last-Updated: Mon Sep 19 20:08:02 2011 (+0800)
 ;;           By: Le Wang
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -48,7 +48,7 @@
 ;; Simple Install:
 ;;
 ;;   (require 'keep-buffers)                     ;; Load the package.
-;;   (keep-buffers-minor-mode 1)
+;;   (keep-buffers-mode 1)
 ;;
 ;;
 ;; By default, "*scratch*" is protected and erased when killed, "*Messages*"
@@ -90,7 +90,7 @@
 
 ;;; Code:
 
-(define-minor-mode keep-buffers-minor-mode
+(define-minor-mode keep-buffers-mode
   "when active, killing protected buffers results in burying them instead.
 Some may also be erased, which is undo-able."
   :init-value nil
@@ -98,7 +98,7 @@ Some may also be erased, which is undo-able."
   :group 'keep-buffers
   :lighter ""
   :version "1.4"
-  (if keep-buffers-minor-mode
+  (if keep-buffers-mode
       ;; Setup the hook
       (add-hook 'kill-buffer-query-functions 'keep-buffers-query)
     (remove-hook 'kill-buffer-query-functions 'keep-buffers-query)))
