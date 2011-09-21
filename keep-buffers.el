@@ -15,7 +15,7 @@
 ;;
 ;; Created: 20/01/2000
 ;;
-;; Last-Updated: Mon Sep 19 20:08:02 2011 (+0800)
+;; Last-Updated: Wed Sep 21 11:02:15 2011 (+0800)
 ;;           By: Le Wang
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -120,10 +120,9 @@ If the CDR is nil, then the buffer is only buried."
 ;;;###autoload
 (defun keep-buffers-query ()
   "The query function that disable deletion of buffers we protect."
-  (let ((crit (some (lambda (crit)
-                      (when (string-match (car crit) (buffer-name))
-                        crit))
-                    keep-buffers-protected-alist)))
+  (let ((crit (dolist (crit keep-buffers-protected-alist)
+                (when (string-match (car crit) (buffer-name))
+                  (return crit)))))
     (if crit
         (progn
           (when (cdr crit)
