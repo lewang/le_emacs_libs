@@ -11,9 +11,9 @@
 
 ;; Created: Sat Oct  1 03:07:18 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Sat Oct  1 03:17:23 2011 (+0800)
+;; Last-Updated: Sat Oct  1 03:32:49 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 4
+;;     Update #: 10
 ;;          URL: https://github.com/lewang/le_emacs_libs/blob/master/scf-mode.el
 ;; Keywords: compilation
 ;; Compatibility: Emacs23.3+
@@ -71,7 +71,6 @@
 
 
 (defvar scf-invisible-overlays nil)
-(add-to-invisibility-spec 'scf)
 
 (defun scf-mode-is-compilation (&optional mode)
   (setq mode (or mode major-mode))
@@ -80,14 +79,14 @@
                                 collect parent into parents
                                 finally return parents)))
 
-(defun scf-add-invisible-overlay (start end)
-  "Add an overlay from `start' to `end' in the current buffer.  Push the
+(defun scf-add-invisible-overlay (begin end)
+  "Add an overlay from `begin' to `end' in the current buffer.  Push the
 overlay onto `scf-invisible-overlays'."
-  (let ((overlay (make-overlay start end)))
+  (let ((overlay (make-overlay begin end)))
     (push overlay scf-invisible-overlays)
     (overlay-put overlay 'invisible 'scf)))
 
-(defun scf-unhide ()
+(defun scf-reveal ()
   "Show all areas hidden "
   (dolist (overlay scf-invisible-overlays)
     (delete-overlay overlay))
@@ -118,6 +117,7 @@ overlay onto `scf-invisible-overlays'."
         ;; to rerun ourselves after compilation finishes, as there is likely
         ;; no output yet.
         (add-hook 'compilation-finish-functions (lambda (buf msg) (set-buffer buf) (scf-mode 1)) nil t)
+        (add-to-invisibility-spec '(scf . t))
         (save-excursion
           (font-lock-fontify-region (point-min) (point-max))
           (goto-char (point-min))
@@ -135,7 +135,8 @@ overlay onto `scf-invisible-overlays'."
                   (scf-add-invisible-overlay start (- (+ start (length fn)) (length base-name))))
               (goto-char (or (next-single-property-change (point) 'face)
                              (point-max)))))))
-    (show-all-invisible)))
+    (scf-reveal)
+    (remove-from-invisibility-spec '(scf . t))))
 
 
 
