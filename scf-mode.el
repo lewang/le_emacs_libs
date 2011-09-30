@@ -11,9 +11,9 @@
 
 ;; Created: Sat Oct  1 03:07:18 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Sat Oct  1 03:14:00 2011 (+0800)
+;; Last-Updated: Sat Oct  1 03:17:23 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 3
+;;     Update #: 4
 ;;          URL: https://github.com/lewang/le_emacs_libs/blob/master/scf-mode.el
 ;; Keywords: compilation
 ;; Compatibility: Emacs23.3+
@@ -143,4 +143,3 @@ overlay onto `scf-invisible-overlays'."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; scf-mode.el ends here
-;;; find hide-lines from the emacswiki
