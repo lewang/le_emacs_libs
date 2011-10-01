@@ -22,3 +22,6 @@
 [submodule "unique-window-buffers"]
 	path = unique-window-buffers
 	url = git@github.com:lewang/unique-window-buffers.git
+[submodule "scf-mode"]
+	path = scf-mode
+	url = git@github.com:lewang/scf-mode.git
