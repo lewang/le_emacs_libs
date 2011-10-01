@@ -11,9 +11,9 @@
 
 ;; Created: Tue Sep 13 01:04:33 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Sat Sep 17 17:42:13 2011 (+0800)
+;; Last-Updated: Sat Oct  1 23:29:41 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 8
+;;     Update #: 9
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/le-eval-and-insert-results.el
 ;; Keywords: emacs-lisp evaluation
 ;; Compatibility: Emacs 23+
@@ -73,6 +73,7 @@ Calling repeatedly should update results."
   (interactive (if (use-region-p)
                    (list (region-beginning) (region-end))
                  (list (point-min) (point-max))))
+  (setq end (set-marker (make-marker) end))
   (save-excursion
     (goto-char beg)
     (while (<= (point) end)
@@ -99,10 +100,8 @@ Calling repeatedly should update results."
                                       "\\);;; ⇒.*\n?\\(?:\\(\t\\|"
                                       tab-space
                                       "\\);;; .*\n\\)*"))
-              (delete-region (point) (match-end 0))
-              (setq end (- end (- (match-end 0) (point))))))
-          (insert result)
-          (setq end (+ end result-length)))
+              (delete-region (point) (match-end 0))))
+          (insert result))
         (setq beg (point))))))
 
 
