@@ -11,9 +11,9 @@
 
 ;; Created: Tue Sep 13 01:04:33 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Sat Oct  1 23:29:41 2011 (+0800)
+;; Last-Updated: Fri Oct  7 13:25:15 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 9
+;;     Update #: 10
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/le-eval-and-insert-results.el
 ;; Keywords: emacs-lisp evaluation
 ;; Compatibility: Emacs 23+
@@ -73,7 +73,7 @@ Calling repeatedly should update results."
   (interactive (if (use-region-p)
                    (list (region-beginning) (region-end))
                  (list (point-min) (point-max))))
-  (setq end (set-marker (make-marker) end))
+  (setq end (copy-marker end))
   (save-excursion
     (goto-char beg)
     (while (<= (point) end)
