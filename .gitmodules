@@ -25,3 +25,6 @@
 [submodule "scf-mode"]
 	path = scf-mode
 	url = git@github.com:lewang/scf-mode.git
+[submodule "anything-project-files"]
+	path = anything-project-files
+	url = git@github.com:lewang/anything-project-files.git
