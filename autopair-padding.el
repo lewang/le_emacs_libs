@@ -11,9 +11,9 @@
 
 ;; Created: Fri Sep 16 19:26:30 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Mon Sep 19 02:10:22 2011 (+0800)
+;; Last-Updated: Sun Oct 16 19:39:48 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 7
+;;     Update #: 8
 ;;          URL: https://github.com/lewang/le_emacs_libs/blob/master/autopair-padding.el
 ;;
 ;; Keywords:
@@ -67,12 +67,14 @@
 (provide 'autopair-padding)
 
 
-(defvar autopair-dont-pad nil
+(defvar autopair-dont-pad-contexts nil
   "list of contexts where padding should not occur
-e.g. (setq autopair-dont-pad '(:comment :string))
+e.g. (setq autopair-dont-pad-contexts'(:comment :string))
 
 see `autopair-extra-pairs' for valid keywords")
-(make-variable-buffer-local 'autopair-dont-pad)
+
+(defvar autopair-dont-pad nil
+  "list of chars for which padding should not happen")
 
 (defun autopair-padding-handler (action pair pos-before)
   "handler for space padded delimiters
@@ -91,7 +93,8 @@ closing padded delimiter properly."
   (let ((where-sym (second (autopair-syntax-ppss)))
         touched)
     (unless (or (eq :everywhere where-sym)
-                (memq where-sym autopair-dont-pad))
+                (memq where-sym autopair-dont-pad-contexts)
+                (memq pair autopair-dont-pad))
       (cond ((and (eq 'opening action)
                   (eq pair (char-after)))
              (insert "  ")
