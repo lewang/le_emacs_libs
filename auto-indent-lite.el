@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Thu Sep 22 13:45:04 2011 (+0800)
+;; Last-Updated: Thu Dec  1 00:24:54 2011 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 501
+;;     Update #: 504
 ;;
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/auto-indent-lite.el
 ;;
@@ -312,18 +312,22 @@ You should also set `kill-whole-line' to do what you want.
     texinfo-mode
     conf-windows-mode
     yaml-mode
-    log-edit-mode)
-  "* List of modes disabled when auto-indent-lite is on."
+    log-edit-mode
+    (lambda ()
+      (not (and (boundp 'mmm-mode)
+                mmm-mode))))
+  "* List of major-modes which should not auto-indent.
+
+Predicates can also be used in this list.  If a predicate returns
+non-nil, then auto-indent will not happen."
   :type '(repeat (sexp :tag "Major mode"))
   :group 'auto-indent)
 
 (defadvice yank (after auto-indent-mode-advice activate)
-  (when (and auto-indent-mode
+  (when (and (auto-indent-lite-p)
              (or (called-interactively-p 'any)
                  (memq this-command (list (key-binding [(control y)]) 'yank)))
-             (not (memq major-mode auto-indent-disabled-modes-list))
-             (not current-prefix-arg)
-             (not (minibufferp)))
+             (not current-prefix-arg))
     (let ((mark-even-if-inactive transient-mark-mode))
       (when auto-indent-use-text-boundaries
         (let ((orig-m (point-marker)))
@@ -336,12 +340,10 @@ You should also set `kill-whole-line' to do what you want.
           (untabify (region-beginning) (region-end))))))
 
 (defadvice yank-pop (after auto-indent-mode-advice activate)
-  (when (and auto-indent-mode
+  (when (and (auto-indent-lite-p)
              (or (called-interactively-p 'any)
                  (memq this-command (list (key-binding [(meta y)]) 'yank)))
-             (not (memq major-mode auto-indent-disabled-modes-list))
-             (not current-prefix-arg)
-             (not (minibufferp)))
+             (not current-prefix-arg))
     (let ((mark-even-if-inactive transient-mark-mode))
       (when auto-indent-use-text-boundaries
         (let ((orig-m (point-marker)))
@@ -448,7 +450,7 @@ Consecutive kill-lines cause lines to be appended to last kill.
                              auto-indent-kill-line-at-eol))))
               (t
                ad-do-it))
-        (when (not (memq major-mode auto-indent-disabled-modes-list))
+        (when (auto-indent-lite-p)
           (indent-according-to-mode)))
     ad-do-it))
 
@@ -463,6 +465,17 @@ Consecutive kill-lines cause lines to be appended to last kill.
   (if auto-indent-use-text-boundaries
       (looking-back "^[ \t]*")
     (bolp)))
+
+
+(defun auto-indent-lite-p ()
+  (and auto-indent-mode
+       (not (dolist (x auto-indent-disabled-modes-list)
+              (if (symbolp x)
+                  (when (eq major-mode x)
+                    (return t))
+                (unless (funcall x)
+                  (return t)))))
+       (not (minibufferp))))
 
 (provide 'auto-indent-lite)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
