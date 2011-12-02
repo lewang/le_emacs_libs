@@ -28,3 +28,6 @@
 [submodule "anything-project-files"]
 	path = anything-project-files
 	url = git@github.com:lewang/anything-project-files.git
+[submodule "winring2"]
+	path = winring2
+	url = git@github.com:lewang/wingring2.git
