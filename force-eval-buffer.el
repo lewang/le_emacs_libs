@@ -7,7 +7,7 @@
 
 ;;;;;;;;;;;; these are stupid alternatives I tried before
 
-(defmacro replacement-def (sym val &rest args)
+(defmacro replacement-def (sym &optional val &rest args)
   `(setq ,sym ,val))
 
 ;;;###autoload
