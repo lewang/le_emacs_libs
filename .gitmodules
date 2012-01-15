@@ -31,3 +31,12 @@
 [submodule "winring2"]
 	path = winring2
 	url = git@github.com:lewang/wingring2.git
+[submodule "iedit"]
+	path = iedit
+	url = git@github.com:lewang/iedit.git
+[submodule "ace-jump-mode"]
+	path = ace-jump-mode
+	url = git@github.com:lewang/ace-jump-mode.git
+[submodule "jump-char"]
+	path = jump-char
+	url = git@github.com:lewang/jump-char.git
