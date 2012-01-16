@@ -40,3 +40,9 @@
 [submodule "jump-char"]
 	path = jump-char
 	url = git@github.com:lewang/jump-char.git
+[submodule "js2-mode"]
+	path = js2-mode
+	url = https://github.com/mooz/js2-mode.git
+[submodule "expand-region"]
+	path = expand-region
+	url = git@github.com:lewang/expand-region.el.git
