@@ -1,4 +1,4 @@
-(provide repeat-macro-def)
+(provide 'repeat-macro-def)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; A previous version of this function used repeat, but setting            ;;
@@ -41,5 +41,4 @@
      `(defun-repeatable ,new-func ()
         ,(format "repeatable version of `%s'" func)
         (interactive)
-        (call-interactively ,func))
-     `(global-set-key [remap ,func] ',new-func))))
+        (call-interactively (quote ,func))))))
