@@ -46,3 +46,24 @@
 [submodule "expand-region"]
 	path = expand-region
 	url = git@github.com:lewang/expand-region.el.git
+[submodule "magit"]
+	path = magit
+	url = git://github.com/magit/magit.git
+[submodule "org-mode"]
+	path = org-mode
+	url = git://orgmode.org/org-mode.git
+[submodule "auto-complete"]
+	path = auto-complete
+	url = git://github.com/m2ym/auto-complete.git
+[submodule "mmm-mode"]
+	path = mmm-mode
+	url = https://github.com/purcell/mmm-mode.git
+[submodule "rinari"]
+	path = rinari
+	url = git@github.com:lewang/rinari.git
+[submodule "yasnippet"]
+	path = yasnippet
+	url = https://github.com/capitaomorte/yasnippet.git
+[submodule "anything-config"]
+	path = anything-config
+	url = git://repo.or.cz/anything-config.git
