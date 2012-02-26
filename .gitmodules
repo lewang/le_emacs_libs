@@ -67,3 +67,9 @@
 [submodule "anything-config"]
 	path = anything-config
 	url = git://repo.or.cz/anything-config.git
+[submodule "highlight-symbol"]
+	path = highlight-symbol
+	url = git@github.com:lewang/highlight-symbol.el.githttps://github.com/nschum/highlight-symbol.el.git
+[submodule "generic-edit-special"]
+	path = generic-edit-special
+	url = git@github.com:lewang/generic-edit-special.git
