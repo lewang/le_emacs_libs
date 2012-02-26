@@ -11,9 +11,9 @@
 
 ;; Created: Sun Feb 26 23:27:17 2012 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Sun Feb 26 23:28:49 2012 (+0800)
+;; Last-Updated: Mon Feb 27 01:24:02 2012 (+0800)
 ;;           By: Le Wang
-;;     Update #: 3
+;;     Update #: 4
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -84,7 +84,7 @@
 ;; We make this advice around to avoid unnecessary buffer modifications.
 
 (defadvice ruby-indent-line (around fix-closing-paren activate)
-  "indent closing paren properly.
+  "indent closing paren to line up properly.
 
 i.e.
 
