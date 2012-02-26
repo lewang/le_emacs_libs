@@ -73,3 +73,6 @@
 [submodule "generic-edit-special"]
 	path = generic-edit-special
 	url = git@github.com:lewang/generic-edit-special.git
+[submodule "inf-ruby"]
+	path = inf-ruby
+	url = https://github.com/nonsequitur/inf-ruby.gitgit@github.com:lewang/inf-ruby.git
