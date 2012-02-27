@@ -11,9 +11,9 @@
 
 ;; Created: Sun Feb 26 23:27:17 2012 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Mon Feb 27 01:24:02 2012 (+0800)
+;; Last-Updated: Mon Feb 27 22:31:59 2012 (+0800)
 ;;           By: Le Wang
-;;     Update #: 4
+;;     Update #: 5
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -28,7 +28,9 @@
 
 ;; Fix some indentation issues with ruby-mode with advices.
 ;;
-;;
+;; Based on work by Dmitry Gutov(dgutov)
+;;   - http://stackoverflow.com/a/7622971/903943 and
+;;   - https://gist.github.com/1274520
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
