@@ -76,3 +76,6 @@
 [submodule "inf-ruby"]
 	path = inf-ruby
 	url = https://github.com/nonsequitur/inf-ruby.gitgit@github.com:lewang/inf-ruby.git
+[submodule "markdown-mode"]
+	path = markdown-mode
+	url = git://jblevins.org/git/markdown-mode.git
