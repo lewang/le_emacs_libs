@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Thu Dec  1 00:24:54 2011 (+0800)
+;; Last-Updated: Tue Feb 28 17:22:29 2012 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 504
+;;     Update #: 506
 ;;
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/auto-indent-lite.el
 ;;
@@ -313,6 +313,8 @@ You should also set `kill-whole-line' to do what you want.
     conf-windows-mode
     yaml-mode
     log-edit-mode
+    (lambda ()
+      (derived-mode-p 'conf-mode))
     (lambda ()
       (not (and (boundp 'mmm-mode)
                 mmm-mode))))
