@@ -82,3 +82,6 @@
 [submodule "emacs_chrome"]
 	path = emacs_chrome
 	url = git@github.com:lewang/emacs_chrome.gitgit://github.com/stsquad/emacs_chrome.git
+[submodule "fic-mode"]
+	path = fic-mode
+	url = git@github.com:lewang/fic-mode.git
