@@ -11,9 +11,9 @@
 
 ;; Created: Sun Feb 26 23:27:17 2012 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Mon Feb 27 22:31:59 2012 (+0800)
+;; Last-Updated: Tue Feb 28 00:23:30 2012 (+0800)
 ;;           By: Le Wang
-;;     Update #: 5
+;;     Update #: 6
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -60,6 +60,9 @@
 
 
 ;; as of 2012-02-25, the canonical ruby-mode.org has this defined wrong.
+;;
+;; 2012-02-28 apparently, it's not a typo.
+;; Hmmm. http://bugs.ruby-lang.org/issues/6091
 ;;
 ;; NOTE: square brace must be specified first, if specified at all.
 (setq ruby-deep-indent-paren '(?\[ ?\( ?\{ t))
