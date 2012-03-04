@@ -79,3 +79,6 @@
 [submodule "markdown-mode"]
 	path = markdown-mode
 	url = git://jblevins.org/git/markdown-mode.git
+[submodule "emacs_chrome"]
+	path = emacs_chrome
+	url = git@github.com:lewang/emacs_chrome.gitgit://github.com/stsquad/emacs_chrome.git
