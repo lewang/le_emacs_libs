@@ -1,9 +1,9 @@
 (provide 'repeat-macro-def)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; A previous version of this function used repeat, but setting            ;;
+;; A previous version of this function used `repeat', but setting          ;;
 ;; `last-repeatable-command' caused the help text to show "&rest --cl-end" ;;
-;; instead of the fomal arguments.  This is more functional any how.       ;;
+;; instead of the formal arguments.  This is more functional any how.      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmacro defun-repeatable (name args &rest body)
