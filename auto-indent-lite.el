@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Tue Feb 28 17:22:29 2012 (+0800)
+;; Last-Updated: Thu Mar 15 11:20:33 2012 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 506
+;;     Update #: 514
 ;;
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/auto-indent-lite.el
 ;;
@@ -27,14 +27,14 @@
 ;; Only smart yank/yank-pop, and kill-line is left.
 ;;
 ;; This is completely *INCOMPATIBLE* with auto-indent-mode.el, if you need to
-;; ensure correct indention at all times, I strongly recomment
+;; ensure correct indention at all times, I strongly recommend
 ;; auto-indent-mode.el.
 ;;
 ;; Installation:
 ;;
 ;;   (require 'auto-indent-light) (setq auto-indent-mode t)
 ;;
-;; Customizaing:
+;; Customization:
 ;;
 ;; M-x customize-group, "auto-indent"
 
@@ -258,6 +258,11 @@
   :type 'boolean
   :group 'auto-indent)
 
+(defcustom auto-indent-threshhold 1500
+  "regions larger than this value will not be indented"
+  :type 'integer
+  :group 'auto-indent)
+
 (defcustom auto-indent-mode-untabify-on-yank-or-paste 't
   "* Untabify pasted or yanked region."
   :type 'boolean
@@ -310,18 +315,18 @@ You should also set `kill-whole-line' to do what you want.
     fundamental-mode
     diff-mode
     texinfo-mode
-    conf-windows-mode
     yaml-mode
     log-edit-mode
+    sql-mode
     (lambda ()
-      (derived-mode-p 'conf-mode))
+      (not (derived-mode-p 'conf-mode 'markdown-mode)))
     (lambda ()
       (not (and (boundp 'mmm-mode)
                 mmm-mode))))
   "* List of major-modes which should not auto-indent.
 
 Predicates can also be used in this list.  If a predicate returns
-non-nil, then auto-indent will not happen."
+nil, then auto-indent will not happen."
   :type '(repeat (sexp :tag "Major mode"))
   :group 'auto-indent)
 
@@ -336,7 +341,9 @@ non-nil, then auto-indent will not happen."
           (goto-char (mark))
           (backward-delete-char (skip-chars-forward " \t"))
           (goto-char orig-m)))
-      (indent-region (region-beginning) (region-end))
+      (if (< (- (region-end) (region-beginning)) auto-indent-threshhold)
+          (indent-region (region-beginning) (region-end))
+        (message "refusing to indent yanked region is larger than %s characters" auto-indent-threshhold))
       (indent-according-to-mode)
       (if auto-indent-mode-untabify-on-yank-or-paste
           (untabify (region-beginning) (region-end))))))
@@ -352,7 +359,9 @@ non-nil, then auto-indent will not happen."
           (goto-char (mark))
           (backward-delete-char (skip-chars-forward " \t"))
           (goto-char orig-m)))
-      (indent-region (region-beginning) (region-end))
+      (if (< (- (region-end) (region-beginning)) auto-indent-threshhold)
+          (indent-region (region-beginning) (region-end))
+        (message "pasted region is bigger than %s characters" auto-indent-threshhold))
       (indent-according-to-mode)
       (if auto-indent-mode-untabify-on-yank-or-paste
           (untabify (region-beginning) (region-end))))))
