@@ -85,3 +85,6 @@
 [submodule "fic-mode"]
 	path = fic-mode
 	url = git@github.com:lewang/fic-mode.git
+[submodule "command-log-mode"]
+	path = command-log-mode
+	url = git@github.com:lewang/command-log-mode.git
