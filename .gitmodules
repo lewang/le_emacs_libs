@@ -85,3 +85,6 @@
 [submodule "command-log-mode"]
 	path = command-log-mode
 	url = git@github.com:lewang/command-log-mode.git
+[submodule "helm"]
+	path = helm
+	url = git@github.com:emacs-helm/helm.git
