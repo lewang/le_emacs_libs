@@ -25,9 +25,6 @@
 [submodule "scf-mode"]
 	path = scf-mode
 	url = git@github.com:lewang/scf-mode.git
-[submodule "anything-project-files"]
-	path = anything-project-files
-	url = git@github.com:lewang/anything-project-files.git
 [submodule "winring2"]
 	path = winring2
 	url = git@github.com:lewang/wingring2.git
@@ -88,3 +85,6 @@
 [submodule "helm"]
 	path = helm
 	url = git@github.com:emacs-helm/helm.git
+[submodule "helm-project-files"]
+	path = helm-project-files
+	url = git@github.com:lewang/helm-project-files.git
