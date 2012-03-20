@@ -11,22 +11,31 @@
 
 ;; Created: Tue Mar 20 19:41:11 2012 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Tue Mar 20 19:42:52 2012 (+0800)
+;; Last-Updated: Tue Mar 20 19:54:05 2012 (+0800)
 ;;           By: Le Wang
-;;     Update #: 1
+;;     Update #: 2
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
 
 ;;; Installation:
 
-;;
-;;
+;;    (require 'repeat-macro-def)
+;;    (defun-repeatable enlarge-window)
+;;    (defun-repeatable enlarge-window-horizontally)
+;;    (global-set-key [remap enlarge-window] 'enlarge-window-repeatable)
+;;    (global-set-key [remap enlarge-window-horizontally] 'enlarge-window-horizontally-repeatable)
 ;;
 
 ;;; Commentary:
 
+;; Default binding for `enlarge-window' is "C-x ^", calling
 ;;
+;;   (defun-repeatable enlarge-window-horizontally)
+;;
+;; defines
+;;
+;; `enlarge-window-repeatable', which is repeatable by "^".
 ;;
 ;;
 
