@@ -1,12 +1,67 @@
-(provide 'repeat-macro-def)
+;;; repeat-macro-def.el --- make interactive funcitons repeatable by final key-chord
+
+;; this file is not part of Emacs
+
+;; Copyright (C) 2012 Le Wang
+;; Author: Le Wang
+;; Maintainer: Le Wang
+;; Description: make interactive funcitons repeatable by final key-chord
+;; Author: Le Wang
+;; Maintainer: Le Wang
+
+;; Created: Tue Mar 20 19:41:11 2012 (+0800)
+;; Version: 0.1
+;; Last-Updated: Tue Mar 20 19:42:52 2012 (+0800)
+;;           By: Le Wang
+;;     Update #: 1
+;; URL:
+;; Keywords:
+;; Compatibility:
+
+;;; Installation:
+
+;;
+;;
+;;
+
+;;; Commentary:
+
+;;
+;;
+;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; A previous version of this function used `repeat', but setting          ;;
 ;; `last-repeatable-command' caused the help text to show "&rest --cl-end" ;;
-;; instead of the formal arguments.  This is more functional any how.      ;;
+;; instead of the formal arguments.  This is more functional as well.      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmacro defun-repeatable (name args &rest body)
+(eval-when-compile (require 'cl))
+
+(provide 'repeat-macro-def)
+
+(defmacro defun-repeatable-int (name args &rest body)
   "Define interactive function that can be repeated by pressing last key cord."
   (declare (indent defun))
   (let* ((res body)
@@ -35,10 +90,17 @@
                          nil)))))))
 
 
-(defmacro replace-repeatable (func)
+(defmacro defun-repeatable (func)
   (let ((new-func (intern (concat (symbol-name func) "-repeatable"))))
-    (progn
+     (progn
      `(defun-repeatable ,new-func ()
         ,(format "repeatable version of `%s'" func)
         (interactive)
         (call-interactively (quote ,func))))))
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; repeat-macro-def.el ends here
+
+(provide 'repeat-macro-def)
