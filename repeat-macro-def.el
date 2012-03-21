@@ -11,9 +11,9 @@
 
 ;; Created: Tue Mar 20 19:41:11 2012 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Tue Mar 20 19:54:05 2012 (+0800)
+;; Last-Updated: Wed Mar 21 08:02:36 2012 (+0800)
 ;;           By: Le Wang
-;;     Update #: 2
+;;     Update #: 3
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -102,7 +102,7 @@
 (defmacro defun-repeatable (func)
   (let ((new-func (intern (concat (symbol-name func) "-repeatable"))))
      (progn
-     `(defun-repeatable ,new-func ()
+     `(defun-repeatable-int ,new-func ()
         ,(format "repeatable version of `%s'" func)
         (interactive)
         (call-interactively (quote ,func))))))
