@@ -11,9 +11,9 @@
 
 ;; Created: Tue Sep 13 01:04:33 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Fri Oct  7 13:25:15 2011 (+0800)
+;; Last-Updated: Sun Apr 29 12:37:18 2012 (+0800)
 ;;           By: Le Wang
-;;     Update #: 10
+;;     Update #: 13
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/le-eval-and-insert-results.el
 ;; Keywords: emacs-lisp evaluation
 ;; Compatibility: Emacs 23+
@@ -79,15 +79,24 @@ Calling repeatedly should update results."
     (while (<= (point) end)
       (forward-sexp 1)
       (when (<= (point) end)
-        (let* ((result (concat
+        (let* ((sexp-str (buffer-substring-no-properties beg (point)))
+               (slime-result nil)
+               (result (concat
                         "\t;;; ⇒ "
                         (replace-regexp-in-string
                          "\n"
                          "\n\t;;; "
-                         (prin1-to-string
-                          (eval
-                           (read
-                            (buffer-substring-no-properties beg (point))))))
+                         (case major-mode
+                           ((clojure-mode)
+                            (slime-eval-async `(swank:eval-and-grab-output ,sexp-str)
+                                              (lambda (result)
+                                                (setq slime-result (second result))))
+                            (while (null slime-result)
+                              (sleep-for 0.01))
+                            slime-result)
+                           (t
+                            (prin1-to-string
+                             (eval (read sexp-str))))))
                         "\n"))
                (result-length (length result))
                (tab-space (make-string tab-width ? )))
