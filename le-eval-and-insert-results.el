@@ -11,9 +11,9 @@
 
 ;; Created: Tue Sep 13 01:04:33 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Sun Apr 29 12:37:18 2012 (+0800)
+;; Last-Updated: Sat May 12 19:18:41 2012 (+0800)
 ;;           By: Le Wang
-;;     Update #: 13
+;;     Update #: 18
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/le-eval-and-insert-results.el
 ;; Keywords: emacs-lisp evaluation
 ;; Compatibility: Emacs 23+
@@ -59,8 +59,10 @@
 ;;; Code:
 
 (eval-when-compile (require 'cl))
+	;;; ⇒ cl
 
 (provide 'le-eval-and-insert-results)
+	;;; ⇒ le-eval-and-insert-results
 
 ;;;###autoload
 (defun le::eval-and-insert-results (beg end)
@@ -70,15 +72,16 @@ Without active region, use the whole buffer.
 
 Calling repeatedly should update results."
 
-  (interactive (if (use-region-p)
+  (interactive (if (use-region-p)cloj
                    (list (region-beginning) (region-end))
                  (list (point-min) (point-max))))
   (setq end (copy-marker end))
   (save-excursion
     (goto-char beg)
-    (while (<= (point) end)
+    (do ()
+        ((> (point) end))
       (forward-sexp 1)
-      (when (<= (point) end)
+      (when (not (> (point) end))
         (let* ((sexp-str (buffer-substring-no-properties beg (point)))
                (slime-result nil)
                (result (concat
@@ -90,6 +93,7 @@ Calling repeatedly should update results."
                            ((clojure-mode)
                             (slime-eval-async `(swank:eval-and-grab-output ,sexp-str)
                                               (lambda (result)
+                                                ;; we throw away stdout for now.
                                                 (setq slime-result (second result))))
                             (while (null slime-result)
                               (sleep-for 0.01))
@@ -111,7 +115,16 @@ Calling repeatedly should update results."
                                       "\\);;; .*\n\\)*"))
               (delete-region (point) (match-end 0))))
           (insert result))
-        (setq beg (point))))))
+        (setq beg (point)))
+      ;; skip over all comments
+      (while (not (eq (point) (progn
+                                (comment-forward 1)
+                                (point)))))
+      ;; if we are at EOF then there we've already evaluated the last
+      ;; meaningful sexp.
+      (when (eobp)
+        (return)))))
+	;;; ⇒ le::eval-and-insert-results
 
 
 
