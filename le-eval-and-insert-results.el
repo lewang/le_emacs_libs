@@ -11,9 +11,9 @@
 
 ;; Created: Tue Sep 13 01:04:33 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Sat May 12 22:43:20 2012 (+0800)
+;; Last-Updated: Sun May 13 00:45:51 2012 (+0800)
 ;;           By: Le Wang
-;;     Update #: 24
+;;     Update #: 29
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/le-eval-and-insert-results.el
 ;; Keywords: emacs-lisp evaluation
 ;; Compatibility: Emacs 23+
@@ -64,6 +64,24 @@
 (provide 'le-eval-and-insert-results)
 	;;; ⇒ le-eval-and-insert-results
 
+(defun le::eair::format-eval-outpt (res &optional stdout)
+  (concat
+   (when (not (zerop (length stdout)))
+     (concat
+      "\t;;; ⇒ <STDOUT>\n"
+      "\t;;; "
+      (replace-regexp-in-string
+       "\n"
+       "\n\t;;; "
+       stdout)
+      "\n"))
+   "\t;;; ⇒ "
+   (replace-regexp-in-string
+    "\n"
+    "\n\t;;; "
+    res)
+   "\n"))
+
 ;;;###autoload
 (defun le::eval-and-insert-results (beg end)
   "eval forms in region and insert results in a line underneath each.
@@ -88,26 +106,20 @@ Calling repeatedly should update results."
           (let* ((sexp-str (buffer-substring-no-properties beg (point)))
                  (result (if (consp current-prefix-arg)
                              ""
-                           (concat
-                            "\t;;; ⇒ "
-                            (replace-regexp-in-string
-                             "\n"
-                             "\n\t;;; "
-                             (case major-mode
-                               ((clojure-mode)
-                                (condition-case err
-                                    (second (slime-eval `(swank:eval-and-grab-output ,sexp-str)))
-                                  (error
-                                   (message "slime error encountered %s" err)
-                                   (throw 'slime-error nil)))
-                                )
-                               (t
-                                (prin1-to-string
-                                 (eval (read sexp-str))))))
-                            "\n")))
+                           (case major-mode
+                             ((clojure-mode)
+                              (condition-case err
+                                  (let ((res (slime-eval `(swank:eval-and-grab-output ,sexp-str))))
+                                    (le::eair::format-eval-outpt (second res) (first res)))
+                                (error
+                                 (message "slime error encountered %s" err)
+                                 (throw 'slime-error nil))))
+                             (t
+                              (le::eair::format-eval-outpt (prin1-to-string
+                                                            (eval (read sexp-str))))))))
                  (result-length (length result))
                  (tab-space (make-string tab-width ? )))
-            (goto-char (point-at-bol 2))
+            (forward-line 1)
             (if (and (eobp)
                      (not (bolp)))                    ; handle eob
                 (insert "\n")
