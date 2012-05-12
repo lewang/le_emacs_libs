@@ -11,9 +11,9 @@
 
 ;; Created: Tue Sep 13 01:04:33 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Sat May 12 19:18:41 2012 (+0800)
+;; Last-Updated: Sat May 12 22:43:20 2012 (+0800)
 ;;           By: Le Wang
-;;     Update #: 18
+;;     Update #: 24
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/le-eval-and-insert-results.el
 ;; Keywords: emacs-lisp evaluation
 ;; Compatibility: Emacs 23+
@@ -68,62 +68,65 @@
 (defun le::eval-and-insert-results (beg end)
   "eval forms in region and insert results in a line underneath each.
 
+With universal prefix, clear results.
+
 Without active region, use the whole buffer.
 
 Calling repeatedly should update results."
 
-  (interactive (if (use-region-p)cloj
+  (interactive (if (use-region-p)
                    (list (region-beginning) (region-end))
                  (list (point-min) (point-max))))
   (setq end (copy-marker end))
-  (save-excursion
-    (goto-char beg)
-    (do ()
-        ((> (point) end))
-      (forward-sexp 1)
-      (when (not (> (point) end))
-        (let* ((sexp-str (buffer-substring-no-properties beg (point)))
-               (slime-result nil)
-               (result (concat
-                        "\t;;; ⇒ "
-                        (replace-regexp-in-string
-                         "\n"
-                         "\n\t;;; "
-                         (case major-mode
-                           ((clojure-mode)
-                            (slime-eval-async `(swank:eval-and-grab-output ,sexp-str)
-                                              (lambda (result)
-                                                ;; we throw away stdout for now.
-                                                (setq slime-result (second result))))
-                            (while (null slime-result)
-                              (sleep-for 0.01))
-                            slime-result)
-                           (t
-                            (prin1-to-string
-                             (eval (read sexp-str))))))
-                        "\n"))
-               (result-length (length result))
-               (tab-space (make-string tab-width ? )))
-          (goto-char (point-at-bol 2))
-          (if (and (eobp)
-                   (not (bolp)))                    ; handle eob
-              (insert "\n")
-            (when (looking-at (concat "\\(?:\t\\|"
-                                      tab-space
-                                      "\\);;; ⇒.*\n?\\(?:\\(\t\\|"
-                                      tab-space
-                                      "\\);;; .*\n\\)*"))
-              (delete-region (point) (match-end 0))))
-          (insert result))
-        (setq beg (point)))
-      ;; skip over all comments
-      (while (not (eq (point) (progn
-                                (comment-forward 1)
-                                (point)))))
-      ;; if we are at EOF then there we've already evaluated the last
-      ;; meaningful sexp.
-      (when (eobp)
-        (return)))))
+  (catch 'slime-error
+    (save-excursion
+      (goto-char beg)
+      (do ()
+          ((> (point) end))
+        (forward-sexp 1)
+        (when (not (> (point) end))
+          (let* ((sexp-str (buffer-substring-no-properties beg (point)))
+                 (result (if (consp current-prefix-arg)
+                             ""
+                           (concat
+                            "\t;;; ⇒ "
+                            (replace-regexp-in-string
+                             "\n"
+                             "\n\t;;; "
+                             (case major-mode
+                               ((clojure-mode)
+                                (condition-case err
+                                    (second (slime-eval `(swank:eval-and-grab-output ,sexp-str)))
+                                  (error
+                                   (message "slime error encountered %s" err)
+                                   (throw 'slime-error nil)))
+                                )
+                               (t
+                                (prin1-to-string
+                                 (eval (read sexp-str))))))
+                            "\n")))
+                 (result-length (length result))
+                 (tab-space (make-string tab-width ? )))
+            (goto-char (point-at-bol 2))
+            (if (and (eobp)
+                     (not (bolp)))                    ; handle eob
+                (insert "\n")
+              (when (looking-at (concat "\\(?:\t\\|"
+                                        tab-space
+                                        "\\);;; ⇒.*\n?\\(?:\\(\t\\|"
+                                        tab-space
+                                        "\\);;; .*\n\\)*"))
+                (delete-region (point) (match-end 0))))
+            (insert result))
+          (setq beg (point)))
+        ;; skip over all comments
+        (while (not (eq (point) (progn
+                                  (comment-forward 1)
+                                  (point)))))
+        ;; if we are at EOF then there we've already evaluated the last
+        ;; meaningful sexp.
+        (when (eobp)
+          (return))))))
 	;;; ⇒ le::eval-and-insert-results
 
 
