@@ -11,9 +11,9 @@
 
 ;; Created: Sun Feb 26 23:27:17 2012 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Tue Feb 28 00:23:30 2012 (+0800)
+;; Last-Updated: Mon Mar 26 11:23:48 2012 (+0800)
 ;;           By: Le Wang
-;;     Update #: 6
+;;     Update #: 29
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -59,32 +59,9 @@
 (require 'autopair)
 
 
-;; as of 2012-02-25, the canonical ruby-mode.org has this defined wrong.
-;;
-;; 2012-02-28 apparently, it's not a typo.
-;; Hmmm. http://bugs.ruby-lang.org/issues/6091
-;;
-;; NOTE: square brace must be specified first, if specified at all.
-(setq ruby-deep-indent-paren '(?\[ ?\( ?\{ t))
-
 (defvar ruby--paren-closings-regex
-  (let (matching-delim)
-    (with-syntax-table ruby-mode-syntax-table
-      (concat
-       "["
-       (apply 'string
-              (nconc
-               (delq nil
-                     (mapcar
-                      (lambda (char)
-                        (when (and
-                               (characterp char)
-                               (setq matching-delim (autopair-find-pair char)))
-                          matching-delim))
-                      ruby-deep-indent-paren))
-               '(?\" ?\')))
-       "]")))
-  "regex matching closing delims of `ruby-deep-indent-paren'")
+  "[])}\"']"
+  "regex matching closing paren or string delimiter.")
 
 ;; We make this advice around to avoid unnecessary buffer modifications.
 
@@ -107,7 +84,9 @@ note: `ruby-deep-indent-paren' has to be enabled for this to work."
       (save-excursion
         (back-to-indentation)
         (let ((state (syntax-ppss)))
-          (when (and (memq (autopair-find-pair (char-after)) ruby-deep-indent-paren)
+          (when (and (or (memq (autopair-find-pair (char-after)) ruby-deep-indent-paren)
+                         (and (eq (char-after) ?\})
+                              (eq 'brace (ruby--point-in-braced-proc))))
                      (not (zerop (car state))))
             (goto-char (cadr state))
             (setq indent (current-column))))))
@@ -133,40 +112,35 @@ note: `ruby-deep-indent-paren' has to be enabled for this to work."
                (goto-char (nth 8 ppss))))
         (ruby--indent-before-all-sexps))))
 
-;;; this variable might be useful later on to fix more corner cases
+(defun ruby--point-in-braced-proc ()
+  "returns 'proc if point is in braces where starting bracs is EOL or followed by arg-list
 
-;; (defvar ruby--eol-continution-re
-;;   (concat "\\(?:"
-;;           ruby-operator-re
-;;           "\\|"
-;;           (regexp-opt ruby-block-op-keywords)
-;;           "\\)"))
+i.e.
 
+    arr.each { |foo|
+      // do stuff
+    }
 
+or
 
-;; test case 1 (pass):
-;;
-;; foo_function a, [{:a => 1,
-;;                   :b => 2},
-;;                  :foo], blah,
-;;              z, {:a => :b}, y,
-;;              p
-;;
+    1.times {
+      // do stuff
+    }
+returns 'brace if point in brace
 
-;; test case 2 (pass):
-;;
-;; foo_function " a b
-;;
-;;cdfff", foo,
-;;             bar
-;;
-
-
-;; test case 3 (FAIL, 2nd line is indented wrong)
-;; puts blah, fo, bar, a &&
-;;   1, baz,
-;;      a
-;;
+return nil otherwise
+"
+  (save-excursion
+    (let ((ppss (syntax-ppss))
+          beg)
+      (cond ((nth 3 ppss)             ; string
+             nil)
+            ((setq beg (nth 1 ppss))  ; brace
+             (goto-char beg)
+             (if (looking-at-p "{[\t ]*\\(?:$\\||\\)")
+                 'proc
+               (when (looking-at-p "{")
+                 'brace)))))))
 
 (defadvice ruby-indent-line (around line-up-args activate)
   "indent new line after comma at EOL properly:
@@ -202,6 +176,23 @@ Note that all params line up after the function.
     (if indent
         (indent-line-to indent)
       ad-do-it)))
+
+;; (defadvice ruby-indent-line (around indent-no-brace-args activate)
+;;   "indent new line after comma at EOL properly:
+
+;; i.e.
+
+;;     foo_function a_param,
+;;       b_param,
+;;       c_param
+
+;; Note that all params line up after the function."
+;;   (let ((res (ruby--point-in-braced-proc)))
+;;     (cond ((eq 'brace res)
+;;            (let ((ruby-deep-indent-paren '(?\[ ?\( ?\{ t)))
+;;              ad-do-it))
+;;           (t
+;;            ad-do-it))))
 
 
 
