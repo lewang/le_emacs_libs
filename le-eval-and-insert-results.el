@@ -11,9 +11,9 @@
 
 ;; Created: Tue Sep 13 01:04:33 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Sun May 13 00:45:51 2012 (+0800)
+;; Last-Updated: Wed May 16 00:14:18 2012 (+0800)
 ;;           By: Le Wang
-;;     Update #: 29
+;;     Update #: 32
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/le-eval-and-insert-results.el
 ;; Keywords: emacs-lisp evaluation
 ;; Compatibility: Emacs 23+
@@ -78,7 +78,7 @@
    "\t;;; ⇒ "
    (replace-regexp-in-string
     "\n"
-    "\n\t;;; "
+    "\n\t;;;   "
     res)
    "\n"))
 
@@ -108,12 +108,15 @@ Calling repeatedly should update results."
                              ""
                            (case major-mode
                              ((clojure-mode)
-                              (condition-case err
-                                  (let ((res (slime-eval `(swank:eval-and-grab-output ,sexp-str))))
-                                    (le::eair::format-eval-outpt (second res) (first res)))
-                                (error
-                                 (message "slime error encountered %s" err)
-                                 (throw 'slime-error nil))))
+                              (let (res pretty-res)
+                                (condition-case err
+                                    (progn
+                                      (setq res (slime-eval `(swank:eval-and-grab-output ,sexp-str)))
+                                      (setq pretty-res (slime-eval `(swank:pprint-eval ,(concat "'" (second res))))))
+                                    (error
+                                     (message "slime error encountered %s" err)
+                                     (throw 'slime-error nil)))
+                                (le::eair::format-eval-outpt pretty-res (first res))))
                              (t
                               (le::eair::format-eval-outpt (prin1-to-string
                                                             (eval (read sexp-str))))))))
