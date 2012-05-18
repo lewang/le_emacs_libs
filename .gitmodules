@@ -88,3 +88,15 @@
 [submodule "helm-project-files"]
 	path = helm-project-files
 	url = git@github.com:lewang/helm-project-files.git
+[submodule "durendal"]
+	path = durendal
+	url = https://github.com/technomancy/durendal.git
+[submodule "clojure-mode"]
+	path = clojure-mode
+	url = https://github.com/technomancy/clojure-mode.git
+[submodule "coffee-mode"]
+	path = coffee-mode
+	url = https://github.com/defunkt/coffee-mode
+[submodule "scss-mode"]
+	path = scss-mode
+	url = https://github.com/antonj/scss-mode.git
