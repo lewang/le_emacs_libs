@@ -11,9 +11,9 @@
 
 ;; Created: Tue Sep 13 01:04:33 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Wed May 16 00:14:18 2012 (+0800)
+;; Last-Updated: Sun May 20 16:20:05 2012 (+0800)
 ;;           By: Le Wang
-;;     Update #: 32
+;;     Update #: 34
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/le-eval-and-insert-results.el
 ;; Keywords: emacs-lisp evaluation
 ;; Compatibility: Emacs 23+
@@ -88,13 +88,19 @@
 
 With universal prefix, clear results.
 
-Without active region, use the whole buffer.
+Without active region, use defun at point.
 
 Calling repeatedly should update results."
 
   (interactive (if (use-region-p)
                    (list (region-beginning) (region-end))
-                 (list (point-min) (point-max))))
+                 (save-excursion
+                  (list (progn
+                          (beginning-of-defun)
+                          (point))
+                        (progn
+                          (end-of-defun)
+                          (point))))))
   (setq end (copy-marker end))
   (catch 'slime-error
     (save-excursion
