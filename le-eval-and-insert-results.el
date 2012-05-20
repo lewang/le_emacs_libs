@@ -11,9 +11,9 @@
 
 ;; Created: Tue Sep 13 01:04:33 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Sun May 20 16:20:05 2012 (+0800)
+;; Last-Updated: Sun May 20 20:39:59 2012 (+0800)
 ;;           By: Le Wang
-;;     Update #: 34
+;;     Update #: 38
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/le-eval-and-insert-results.el
 ;; Keywords: emacs-lisp evaluation
 ;; Compatibility: Emacs 23+
@@ -88,19 +88,24 @@
 
 With universal prefix, clear results.
 
+With two universal arguments, use whole buffer.
+
 Without active region, use defun at point.
 
 Calling repeatedly should update results."
 
-  (interactive (if (use-region-p)
-                   (list (region-beginning) (region-end))
-                 (save-excursion
-                  (list (progn
-                          (beginning-of-defun)
-                          (point))
-                        (progn
-                          (end-of-defun)
-                          (point))))))
+  (interactive (cond ((use-region-p)
+                      (list (region-beginning) (region-end)))
+                     ((consp current-prefix-arg)
+                      (list (point-min) (point-max)))
+                     (t
+                      (save-excursion
+                        (list (progn
+                                (beginning-of-defun)
+                                (point))
+                              (progn
+                                (end-of-defun)
+                                (point)))))))
   (setq end (copy-marker end))
   (catch 'slime-error
     (save-excursion
@@ -110,7 +115,7 @@ Calling repeatedly should update results."
         (forward-sexp 1)
         (when (not (> (point) end))
           (let* ((sexp-str (buffer-substring-no-properties beg (point)))
-                 (result (if (consp current-prefix-arg)
+                 (result (if (equal current-prefix-arg '(4))
                              ""
                            (case major-mode
                              ((clojure-mode)
