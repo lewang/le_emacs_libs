@@ -8,7 +8,7 @@
 ;;;;;;;;;;;; these are stupid alternatives I tried before
 
 (defmacro replacement-def (sym &optional val &rest args)
-  `(setq ,sym ,val))
+  `(setq-default ,sym ,val))
 
 ;;;###autoload
 (defun force-eval (beg end)
