@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Tue Apr  3 14:22:08 2012 (+0800)
+;; Last-Updated: Tue Jun 12 16:31:55 2012 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 515
+;;     Update #: 516
 ;;
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/auto-indent-lite.el
 ;;
@@ -323,7 +323,8 @@ You should also set `kill-whole-line' to do what you want.
       (not (derived-mode-p 'conf-mode 'markdown-mode)))
     (lambda ()
       (not (and (boundp 'mmm-mode)
-                mmm-mode))))
+                mmm-mode
+                (memq major-mode '(html-mode))))))
   "* List of major-modes which should not auto-indent.
 
 Predicates can also be used in this list.  If a predicate returns
