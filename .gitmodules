@@ -100,3 +100,6 @@
 [submodule "scss-mode"]
 	path = scss-mode
 	url = https://github.com/antonj/scss-mode.git
+[submodule "helm-cmd-t"]
+	path = helm-cmd-t
+	url = git@github.com:lewang/helm-cmd-t.git
