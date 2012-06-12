@@ -103,3 +103,9 @@
 [submodule "helm-cmd-t"]
 	path = helm-cmd-t
 	url = git@github.com:lewang/helm-cmd-t.git
+[submodule "ibuffer-vc"]
+	path = ibuffer-vc
+	url = https://github.com/purcell/ibuffer-vc.git
+[submodule "handlebars-mode"]
+	path = handlebars-mode
+	url = https://github.com/danielevans/handlebars-mode.git
