@@ -16,7 +16,7 @@
   (interactive (if (use-region-p)
                    (list (region-beginning)
                          (region-end))
-                 (point-min) (point-max)))
+                 (list (point-min) (point-max))))
   (eval-region beg end)                         ; define variables properly at least once
   (let ((func-alist (mapcar (lambda (func)
                               (cons func (symbol-function func)))
