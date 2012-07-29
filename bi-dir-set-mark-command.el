@@ -13,7 +13,7 @@
 ;; Version: 0.1
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 4
+;;     Update #: 5
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -35,7 +35,7 @@
 ;;; Commentary:
 
 ;;
-;;  This is a rehash of two answers on SO:
+;;  This is a rehash of two answers with some bug fixes on SO:
 ;;
 ;;    http://stackoverflow.com/a/3399064/903943
 ;;    http://stackoverflow.com/a/5117076/903943
