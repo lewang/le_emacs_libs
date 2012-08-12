@@ -109,3 +109,18 @@
 [submodule "handlebars-mode"]
 	path = handlebars-mode
 	url = https://github.com/danielevans/handlebars-mode.git
+[submodule "one-key"]
+	path = one-key
+	url = git@github.com:lewang/one-key.git
+[submodule "wgrep"]
+	path = wgrep
+	url = https://github.com/mhayashi1120/Emacs-wgrep.git
+[submodule "autopair"]
+	path = autopair
+	url = git://github.com/capitaomorte/autopair.git
+[submodule "bm"]
+	path = bm
+	url = https://github.com/joodland/bm.git
+[submodule "emacs-async"]
+	path = emacs-async
+	url = https://github.com/jwiegley/emacs-async.git
