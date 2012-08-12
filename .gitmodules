@@ -60,19 +60,16 @@
 	url = https://github.com/capitaomorte/yasnippet.git
 [submodule "highlight-symbol"]
 	path = highlight-symbol
-	url = git@github.com:lewang/highlight-symbol.el.githttps://github.com/nschum/highlight-symbol.el.git
+	url = git://github.com/lewang/highlight-symbol.el.git
 [submodule "generic-edit-special"]
 	path = generic-edit-special
 	url = git@github.com:lewang/generic-edit-special.git
 [submodule "inf-ruby"]
 	path = inf-ruby
-	url = https://github.com/nonsequitur/inf-ruby.gitgit@github.com:lewang/inf-ruby.git
+	url = git://github.com/nonsequitur/inf-ruby.git
 [submodule "markdown-mode"]
 	path = markdown-mode
 	url = git://jblevins.org/git/markdown-mode.git
-[submodule "emacs_chrome"]
-	path = emacs_chrome
-	url = git@github.com:lewang/emacs_chrome.gitgit://github.com/stsquad/emacs_chrome.git
 [submodule "fic-mode"]
 	path = fic-mode
 	url = git@github.com:lewang/fic-mode.git
@@ -136,3 +133,6 @@
 [submodule "MRU-yank"]
 	path = MRU-yank
 	url = git://github.com/lewang/le_emacs_MRU_yank.git
+[submodule "emacs_chrome"]
+	path = emacs_chrome
+	url = git://github.com/stsquad/emacs_chrome.git
