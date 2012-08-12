@@ -1,9 +1,6 @@
 [submodule "try-code"]
 	path = try-code
 	url = git@github.com:lewang/le_emacs_try_code.git
-[submodule "LRU-yank"]
-	path = LRU-yank
-	url = git@github.com:lewang/le_emacs_LRU_yank.git
 [submodule "whole-line-funcs"]
 	path = whole-line-funcs
 	url = git@github.com:lewang/le_emacs_whole_line_funcs.git
@@ -136,3 +133,6 @@
 [submodule "color-theme-buffer-local"]
 	path = color-theme-buffer-local
 	url = git://github.com/lewang/color-theme-buffer-local.gitgit@github.com:lewang/color-theme-buffer-local.gitgit://github.com/vic/color-theme-buffer-local.git
+[submodule "MRU-yank"]
+	path = MRU-yank
+	url = https://github.com/lewang/le_emacs_MRU_yank.git
