@@ -1,6 +1,4 @@
-;; -*- lexical-binding: t -*-
-
-(provide inverted-replace)
+(provide 'inverted-replace)
 
 (require 're-builder)
 (require 'parallel-replace)
