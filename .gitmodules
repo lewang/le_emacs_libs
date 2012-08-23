@@ -136,3 +136,9 @@
 [submodule "emacs_chrome"]
 	path = emacs_chrome
 	url = git://github.com/stsquad/emacs_chrome.git
+[submodule "cucumber"]
+	path = cucumber
+	url = git://github.com/michaelklishin/cucumber.el.git
+[submodule "rvm"]
+	path = rvm
+	url = git://github.com/senny/rvm.el.git
