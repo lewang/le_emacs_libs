@@ -90,6 +90,9 @@
 
 ;;; Code:
 
+(eval-when-compile
+  (require 'cl))
+
 (define-minor-mode keep-buffers-mode
   "when active, killing protected buffers results in burying them instead.
 Some may also be erased, which is undo-able."
