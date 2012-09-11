@@ -1,3 +1,5 @@
+;;; TODO(LE) global should be from all open buffers, not saved bookmarks
+;;; bm-ext seems crucial
 
 ;;; https://gist.github.com/1616018
 
@@ -76,14 +78,6 @@
                       (with-current-buffer helm-output-buffer
                         (insert output-line)))))))))
 
-
-
-
-
-
-;;; http://emacswiki.org/emacs/AnythingSources
-
-
 (defvar helm-c-source-bm
   '((name . "Visible Bookmarks")
     (init . helm-c-source-bm-init)
@@ -105,3 +99,10 @@
                              annotation
                              (buffer-substring start (1- end)))))
             (with-current-buffer buf (insert str))))))))
+
+(defun helm-bm ()
+  "Preconfigured `helm' to list \"bm\" bookmarks."
+  (interactive)
+  (helm :sources '(helm-c-source-bm)
+        :buffer "*helm bm*"))
+

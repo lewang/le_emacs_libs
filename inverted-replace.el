@@ -15,6 +15,9 @@
     string))
 
 (defun inverted-replace-regexp (from to)
+  "FROM is regexp string with subgroups.
+
+TO is quoted list of subgroups to replace with."
   (interactive (destructuring-bind (from to _)
                    (query-replace-read-args "inverted-replace-regexp: " t)
                  (list from to)))
