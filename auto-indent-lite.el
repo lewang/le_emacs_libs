@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Fri Aug 31 12:04:33 2012 (+0800)
+;; Last-Updated: Sun Oct 14 22:43:12 2012 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 518
+;;     Update #: 519
 ;;
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/auto-indent-lite.el
 ;;
@@ -312,6 +312,7 @@ You should also set `kill-whole-line' to do what you want.
     yaml-mode
     sql-mode
     coffee-mode
+    makefile-mode
     (lambda ()
       (not (derived-mode-p 'conf-mode 'markdown-mode)))
     (lambda ()
