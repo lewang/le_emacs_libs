@@ -154,3 +154,6 @@
 [submodule "bd-set-mark"]
 	path = bd-set-mark
 	url = git@github.com:lewang/bd-set-mark.git
+[submodule "ert-test-skeleton"]
+	path = ert-test-skeleton
+	url = git@github.com:lewang/ert-test-skeleton.git
