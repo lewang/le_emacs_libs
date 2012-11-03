@@ -142,3 +142,15 @@
 [submodule "rvm"]
 	path = rvm
 	url = git://github.com/senny/rvm.el.git
+[submodule "theme-helper"]
+	path = theme-helper
+	url = git@github.com:lewang/theme-helper.git
+[submodule "solarized-theme"]
+	path = solarized-theme
+	url = git@github.com:lewang/emacs-color-theme-solarized.git
+[submodule "smart-forward"]
+	path = smart-forward
+	url = git://github.com/magnars/smart-forward.el.git
+[submodule "bd-set-mark"]
+	path = bd-set-mark
+	url = git@github.com:lewang/bd-set-mark.git
