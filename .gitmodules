@@ -157,3 +157,6 @@
 [submodule "ert-test-skeleton"]
 	path = ert-test-skeleton
 	url = git@github.com:lewang/ert-test-skeleton.git
+[submodule "ws-butler"]
+	path = ws-butler
+	url = git@github.com:lewang/ws-butler.git
