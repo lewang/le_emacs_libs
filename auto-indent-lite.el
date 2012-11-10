@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Sun Oct 14 22:43:12 2012 (+0800)
+;; Last-Updated: Sat Nov 10 20:24:02 2012 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 519
+;;     Update #: 521
 ;;
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/auto-indent-lite.el
 ;;
@@ -313,6 +313,8 @@ You should also set `kill-whole-line' to do what you want.
     sql-mode
     coffee-mode
     makefile-mode
+    fundamental-mode
+    text-mode
     (lambda ()
       (not (derived-mode-p 'conf-mode 'markdown-mode)))
     (lambda ()
@@ -374,7 +376,7 @@ in non-interactive calls.
       (let ((del-eol (eolp)))
         ad-do-it
         (when (and del-eol
-                   auto-indent-mode
+                   (auto-indent-lite-p)
                    (not (minibufferp))
                    auto-indent-delete-line-char-remove-extra-spaces)
           (fixup-whitespace)
@@ -394,7 +396,7 @@ If at end of line, obey `auto-indent-kill-line-at-eol'
 Consecutive kill-lines cause lines to be appended to last kill.
 
 "
-  (if (and auto-indent-mode
+  (if (and (auto-indent-lite-p)
              (not (minibufferp))
              (or (called-interactively-p 'any)
                  (memq this-command (list (key-binding [(control k)])))))
