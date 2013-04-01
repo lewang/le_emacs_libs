@@ -160,3 +160,30 @@
 [submodule "ws-butler"]
 	path = ws-butler
 	url = git@github.com:lewang/ws-butler.git
+[submodule "logito"]
+	path = logito
+	url = git://github.com/sigma/logito
+[submodule "volatile-highlights.el"]
+	path = volatile-highlights.el
+	url = git@github.com:lewang/volatile-highlights.el.gitgit@github.com:k-talo/volatile-highlights.el.git
+[submodule "org-bullets"]
+	path = org-bullets
+	url = git@github.com:sabof/org-bullets.git
+[submodule "magit-gh-pulls"]
+	path = magit-gh-pulls
+	url = git@github.com:lewang/magit-gh-pulls.gitgit://github.com/sigma/magit-gh-pulls.git
+[submodule "gist"]
+	path = gist
+	url = git://github.com/defunkt/gist.el.git
+[submodule "delim-pad"]
+	path = delim-pad
+	url = git@github.com:lewang/delim-pad.git
+[submodule "gh"]
+	path = gh
+	url = git://github.com/sigma/gh.el
+[submodule "pcache"]
+	path = pcache
+	url = git://github.com/sigma/pcache
+[submodule "git-modes"]
+	path = git-modes
+	url = git://github.com/lunaryorn/git-modes.git

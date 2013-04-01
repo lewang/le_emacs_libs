@@ -6,11 +6,11 @@
 ;; Maintainer: Le Wang
 ;; Created: Sat Nov 6 11:02:07 2010 (-0500)
 ;; Version: 0.3
-;; Last-Updated: Sat Nov 10 20:24:02 2012 (+0800)
+;; Last-Updated: Sun Mar 31 08:44:35 2013 (+0800)
 ;;
 ;; 21:13:09 2011 (+0800)
 ;;           By: Le Wang
-;;     Update #: 521
+;;     Update #: 523
 ;;
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/auto-indent-lite.el
 ;;
@@ -305,8 +305,10 @@ You should also set `kill-whole-line' to do what you want.
   :group 'auto-indent)
 
 (defcustom auto-indent-disabled-modes-list
-  '(wl-summary-mode
+  '(text-mode
+    wl-summary-mode
     org-mode
+    feature-mode
     snippet-mode
     texinfo-mode
     yaml-mode
@@ -314,7 +316,7 @@ You should also set `kill-whole-line' to do what you want.
     coffee-mode
     makefile-mode
     fundamental-mode
-    text-mode
+    markdown-mode
     (lambda ()
       (not (derived-mode-p 'conf-mode 'markdown-mode)))
     (lambda ()

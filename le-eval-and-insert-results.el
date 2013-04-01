@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t -*-
 ;;; le-eval-and-insert-results.el --- evaluates buffer and inline results
 
 ;; this file is not part of Emacs
@@ -11,9 +12,9 @@
 
 ;; Created: Tue Sep 13 01:04:33 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Sun May 20 20:39:59 2012 (+0800)
+;; Last-Updated: Sat Mar 30 22:41:55 2013 (+0800)
 ;;           By: Le Wang
-;;     Update #: 38
+;;     Update #: 62
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/le-eval-and-insert-results.el
 ;; Keywords: emacs-lisp evaluation
 ;; Compatibility: Emacs 23+
@@ -65,95 +66,152 @@
 	;;; ⇒ le-eval-and-insert-results
 
 (defun le::eair::format-eval-outpt (res &optional stdout)
-  (concat
-   (when (not (zerop (length stdout)))
-     (concat
-      "\t;;; ⇒ <STDOUT>\n"
-      "\t;;; "
-      (replace-regexp-in-string
-       "\n"
-       "\n\t;;; "
-       stdout)
-      "\n"))
-   "\t;;; ⇒ "
-   (replace-regexp-in-string
-    "\n"
-    "\n\t;;;   "
-    res)
-   "\n"))
+  (let ((triple-comment (make-string 3 (string-to-char comment-start))))
+    (concat
+     (when (not (zerop (length stdout)))
+       (concat
+        "\t"
+        triple-comment
+        " ⇒ <STDOUT>\n"
+        "\t"
+        triple-comment
+        " "
+        (replace-regexp-in-string
+         "\n"
+         (concat
+          "\n\t"
+          triple-comment
+          " ")
+         stdout)
+        "\n"))
+     "\t"
+     triple-comment
+     " ⇒ "
+     (replace-regexp-in-string
+      "\n"
+      (concat
+       "\n\t"
+       triple-comment
+       "   ")
+      res)
+     "\n")))
 
-;;;###autoload
-(defun le::eval-and-insert-results (beg end)
-  "eval forms in region and insert results in a line underneath each.
+(defun le::eval-and-insert-all-sexps (beg end)
+  "call `le::eval-and-insert-results' for all sexps in region.
 
-With universal prefix, clear results.
-
-With two universal arguments, use whole buffer.
-
-Without active region, use defun at point.
-
-Calling repeatedly should update results."
-
+With universal arguments, use whole buffer.
+"
   (interactive (cond ((use-region-p)
                       (list (region-beginning) (region-end)))
                      ((consp current-prefix-arg)
-                      (list (point-min) (point-max)))
-                     (t
-                      (save-excursion
-                        (list (progn
-                                (beginning-of-defun)
-                                (point))
-                              (progn
-                                (end-of-defun)
-                                (point)))))))
+                      (list (point-min) (point-max)))))
   (setq end (copy-marker end))
-  (catch 'slime-error
+  (let ((forward-func (nth 1 (le::eair::get-movements))))
     (save-excursion
       (goto-char beg)
-      (do ()
-          ((> (point) end))
-        (forward-sexp 1)
-        (when (not (> (point) end))
-          (let* ((sexp-str (buffer-substring-no-properties beg (point)))
-                 (result (if (equal current-prefix-arg '(4))
-                             ""
-                           (case major-mode
-                             ((clojure-mode)
-                              (let (res pretty-res)
-                                (condition-case err
-                                    (progn
-                                      (setq res (slime-eval `(swank:eval-and-grab-output ,sexp-str)))
-                                      (setq pretty-res (slime-eval `(swank:pprint-eval ,(concat "'" (second res))))))
-                                    (error
-                                     (message "slime error encountered %s" err)
-                                     (throw 'slime-error nil)))
-                                (le::eair::format-eval-outpt pretty-res (first res))))
-                             (t
-                              (le::eair::format-eval-outpt (prin1-to-string
-                                                            (eval (read sexp-str))))))))
-                 (result-length (length result))
-                 (tab-space (make-string tab-width ? )))
-            (forward-line 1)
-            (if (and (eobp)
-                     (not (bolp)))                    ; handle eob
-                (insert "\n")
-              (when (looking-at (concat "\\(?:\t\\|"
-                                        tab-space
-                                        "\\);;; ⇒.*\n?\\(?:\\(\t\\|"
-                                        tab-space
-                                        "\\);;; .*\n\\)*"))
-                (delete-region (point) (match-end 0))))
-            (insert result))
-          (setq beg (point)))
-        ;; skip over all comments
-        (while (not (eq (point) (progn
-                                  (comment-forward 1)
-                                  (point)))))
-        ;; if we are at EOF then there we've already evaluated the last
-        ;; meaningful sexp.
-        (when (eobp)
-          (return))))))
-	;;; ⇒ le::eval-and-insert-results
+      (loop do (progn
+                 (comment-forward 10000)
+                 (funcall forward-func 1)
+                 (call-interactively 'le::eval-and-insert-results))
+            while (and (< (point) end)
+                       (not (eobp))))))
+  (set-marker end nil))
+
+(defun le::eair::get-result-regexp ()
+  "get regexp for current buffer"
+  (let ((tab-space (make-string tab-width ? ))
+        (triple-comment (make-string 3 (string-to-char comment-start))))
+    (concat "\\(?:\t\\|"
+            tab-space
+            "\\)"
+            triple-comment
+            " ⇒.*\n?\\(?:\\(\t\\|"
+            tab-space
+            "\\)"
+            triple-comment
+            " .*\n\\)*")))
+
+;;;###autoload
+(defun le::clear-inserted-results (beg end)
+  "clear inserted results in region."
+  (interactive "*r")
+  (save-excursion
+    (let ((case-fold-search nil)
+          (regexp (le::eair::get-result-regexp)))
+      (setq end (copy-marker end t))
+      (goto-char beg)
+      (while (re-search-forward regexp end 'noerror)
+        (replace-match ""))
+      (set-marker end nil))))
+
+
+(defvar le::eair::movements-alist
+  '((clojure-mode          beginning-of-defun end-of-defun)
+    (emacs-lisp-mode       beginning-of-defun end-of-defun)
+    (lisp-interaction-mode beginning-of-defun end-of-defun)
+    (t                     backward-paragraph forward-paragraph))
+  "Per major-mode movements.")
+
+(defun le::eair::get-movements ()
+  "return list of movements for current major-mode"
+  (let ((res (assq major-mode le::eair::movements-alist)))
+    (cdr
+     (or res
+         (assq t le::eair::movements-alist)))))
+
+(defun le::eair::result-handler-maker (pos)
+  "create a function appropriate for handling result"
+  (let ((marker (copy-marker pos)))
+    (lambda (res &optional stdout)
+      (with-current-buffer (marker-buffer marker)
+        (save-excursion
+          (goto-char marker)
+          (insert (le::eair::format-eval-outpt res stdout))))
+      (set-marker marker nil))))
+
+
+;;;###autoload
+(defun le::eval-and-insert-results (beg end)
+  "eval region as single form and append result to end."
+  (interactive (save-excursion
+                 (destructuring-bind (back-func forward-func)
+                     (le::eair::get-movements)
+                   (let ((initial-beg (progn
+                                        (funcall back-func)
+                                        (point)))
+                         (initial-end (progn
+                                        (funcall forward-func)
+                                        (forward-comment 10000)
+                                        (point))))
+                     (le::clear-inserted-results initial-beg initial-end)
+                     (goto-char initial-beg)
+                     (skip-chars-forward " \t\n")
+                     (list (point-at-bol 0)
+                           (progn
+                             (funcall forward-func)
+                             (skip-chars-backward " \t\n")
+                             (point)))))))
+  (let* ((sexp-str (buffer-substring-no-properties beg end))
+         (insert-at (save-excursion
+                      (goto-char end)
+                      (unless (bolp)
+                        (if (eobp)
+                            (insert "\n")
+                          (forward-line 1)))
+                      (point)))
+         (handler (le::eair::result-handler-maker insert-at)))
+    (case major-mode
+      ('clojure-mode
+       (let (res pretty-res)
+         (setq res (slime-eval `(swank:eval-and-grab-output ,sexp-str)))
+         (setq stdout-res (slime-eval `(swank:pprint-eval ,(concat "'" (second res)))))
+         (funcall handler res stdout-res)))
+      ((emacs-lisp-mode lisp-interaction-mode)                             ; emacs-lisps
+       (funcall handler (prin1-to-string
+                         (eval (read sexp-str)))))
+      (t
+       (require 'le-comint-gather-output)
+       (le::comint-get-output sexp-str handler)))))
 
 
 

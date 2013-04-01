@@ -1,6 +1,8 @@
 ;;; TODO selecting all lines creats too many spurious spaces at EOL, maybe
 ;;; just the indentation?
 
+(require 'iedit-rect)
+
 (defun le::fix-indentation-extend (extend-to)
   (if iedit-rectangle
       (let ((beg (min (nth 0 iedit-rectangle) extend-to))
@@ -24,6 +26,9 @@
                                         (point))))
             (forward-line 1))
           (goto-char end)
+          ;; use visual rectangle
+          (when (bolp)
+            (forward-line -1))
           (move-to-column (car min-indent) t)
           (iedit-rectangle-mode beg (point))
           (goto-char (cdr min-indent))))
@@ -39,17 +44,21 @@ when rectangle is active:
   when point is inside rectangle, cancel `iedit-rect-mode'"
   (interactive "*r")
 
-  (if iedit-rectangle-mode
-      (le::fix-indentation-extend (point))
-    (iedit-rectangle-mode beg
-                          ;; we pick the visual rectangle -- if end is (bol) then the visual rectangle
-                          ;; does not include it.
-                          (progn (goto-char end)
-                                 (if (bolp)
-                                     (progn (skip-chars-backward " \t\n")
-                                            (point))
-                                   end)))
-    (le::fix-indentation-extend beg)
-    (le::fix-indentation-extend end)))
+  (let ((beg (copy-marker beg))
+        (end (copy-marker end t)))
+   (if iedit-rectangle-mode
+       (le::fix-indentation-extend (point))
+     (iedit-rectangle-mode beg
+                           ;; we pick the visual rectangle -- if end is (bol) then the visual rectangle
+                           ;; does not include it.
+                           (progn (goto-char end)
+                                  (if (bolp)
+                                      (progn (skip-chars-backward " \t\n")
+                                             (point))
+                                    end)))
+     (le::fix-indentation-extend beg)
+     (le::fix-indentation-extend end))
+   (set-marker beg nil)
+   (set-marker end nil)))
 
-(global-set-key (kbd "<C-S-return>") 'le::fix-indentation)
+;; (global-set-key (kbd "<C-S-return>") 'le::fix-indentation)
