@@ -12,9 +12,9 @@
 
 ;; Created: Tue Sep 13 01:04:33 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Sat Mar 30 22:41:55 2013 (+0800)
+;; Last-Updated: Tue Apr 30 01:09:08 2013 (+0800)
 ;;           By: Le Wang
-;;     Update #: 62
+;;     Update #: 83
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/le-eval-and-insert-results.el
 ;; Keywords: emacs-lisp evaluation
 ;; Compatibility: Emacs 23+
@@ -104,9 +104,15 @@ With universal arguments, use whole buffer.
   (interactive (cond ((use-region-p)
                       (list (region-beginning) (region-end)))
                      ((consp current-prefix-arg)
-                      (list (point-min) (point-max)))))
-  (setq end (copy-marker end))
-  (let ((forward-func (nth 1 (le::eair::get-movements))))
+                      (list (point-min) (point-max)))
+                     (t
+                      (error "Press C-u to use entire buffer, bro."))))
+  (setq end (save-excursion
+              (goto-char end)
+              (skip-chars-backward " \t\n")
+              (forward-comment -10000)
+              (copy-marker (point))))
+  (let ((forward-func (nth 1 (le::eair::get-mode-info))))
     (save-excursion
       (goto-char beg)
       (loop do (progn
@@ -145,19 +151,21 @@ With universal arguments, use whole buffer.
       (set-marker end nil))))
 
 
-(defvar le::eair::movements-alist
-  '((clojure-mode          beginning-of-defun end-of-defun)
-    (emacs-lisp-mode       beginning-of-defun end-of-defun)
-    (lisp-interaction-mode beginning-of-defun end-of-defun)
-    (t                     backward-paragraph forward-paragraph))
-  "Per major-mode movements.")
+(defvar le::eair::modes-alist
+  '((clojure-mode          beginning-of-defun end-of-defun nil)
+    (emacs-lisp-mode       beginning-of-defun end-of-defun nil)
+    (lisp-interaction-mode beginning-of-defun end-of-defun nil)
+    (sql-mode              backward-paragraph forward-paragraph le::eair::sql-ok)
+    (t                     backward-paragraph forward-paragraph le::eair::no-context))
+  "Per major-mode settings.
+  (BACKWARD-FUNC FORWARD-FUNC VALIDATION-func)")
 
-(defun le::eair::get-movements ()
+(defun le::eair::get-mode-info ()
   "return list of movements for current major-mode"
-  (let ((res (assq major-mode le::eair::movements-alist)))
+  (let ((res (assq major-mode le::eair::modes-alist)))
     (cdr
      (or res
-         (assq t le::eair::movements-alist)))))
+         (assq t le::eair::modes-alist)))))
 
 (defun le::eair::result-handler-maker (pos)
   "create a function appropriate for handling result"
@@ -169,50 +177,81 @@ With universal arguments, use whole buffer.
           (insert (le::eair::format-eval-outpt res stdout))))
       (set-marker marker nil))))
 
+(defun le::eair::no-context ()
+  "return t when context is not in the middle of string or paired
+  delimiter.
+
+  Raise Error otherwise."
+  (let ((info (syntax-ppss)))
+    ;; (1 3321 3351 nil nil nil 0 nil nil
+    ;;    (3321))
+    (cond ((not (eq 0 (nth 0 info)))
+           (error "Unfinished list."))
+          ((nth 3 info)
+           (error "Unfinished string."))
+          (t))))
+
+(defun le::eair::sql-ok ()
+  (and (le::eair::no-context)
+       (cond ((not (= ?\; (char-before)))
+              (error "Missing semi-colon."))
+             (t))))
+
+(defun le::evair-process-region ()
+  "Process raw BEG END for interactive use."
+  (destructuring-bind (back-func forward-func validation)
+      (le::eair::get-mode-info)
+    (let ((saved-point (point))
+          (initial-beg (progn
+                         (funcall back-func)
+                         (point)))
+          (initial-end (progn
+                         (funcall forward-func)
+                         (forward-comment 10000)
+                         (point))))
+      (le::clear-inserted-results initial-beg initial-end)
+      (goto-char initial-beg)
+      (skip-chars-forward " \t\n")
+      (prog1
+          (list (point-at-bol 0)
+                (progn
+                  (funcall forward-func)
+                  (skip-chars-backward " \t\n")
+                  (when validation
+                    (funcall validation))
+                  (point)))
+        (goto-char saved-point)))))
 
 ;;;###autoload
 (defun le::eval-and-insert-results (beg end)
   "eval region as single form and append result to end."
-  (interactive (save-excursion
-                 (destructuring-bind (back-func forward-func)
-                     (le::eair::get-movements)
-                   (let ((initial-beg (progn
-                                        (funcall back-func)
-                                        (point)))
-                         (initial-end (progn
-                                        (funcall forward-func)
-                                        (forward-comment 10000)
-                                        (point))))
-                     (le::clear-inserted-results initial-beg initial-end)
-                     (goto-char initial-beg)
-                     (skip-chars-forward " \t\n")
-                     (list (point-at-bol 0)
-                           (progn
-                             (funcall forward-func)
-                             (skip-chars-backward " \t\n")
-                             (point)))))))
+  (interactive (le::evair-process-region))
   (let* ((sexp-str (buffer-substring-no-properties beg end))
-         (insert-at (save-excursion
-                      (goto-char end)
-                      (unless (bolp)
-                        (if (eobp)
-                            (insert "\n")
-                          (forward-line 1)))
-                      (point)))
-         (handler (le::eair::result-handler-maker insert-at)))
+         (insert-pos (save-excursion
+                       (goto-char end)
+                       (skip-chars-forward " \t")
+                       (unless (bolp)
+                         (if (eobp)
+                             (insert "\n")
+                           (forward-line 1)))
+                       (point))))
+    (le::eval-and-insert-sexp sexp-str insert-pos)))
+
+(defun le::eval-and-insert-sexp (sexp-str insert-pos)
+  "eval str and insert results at insert-pos."
+  (let ((handler (le::eair::result-handler-maker insert-pos)))
     (case major-mode
       ('clojure-mode
        (let (res pretty-res)
          (setq res (slime-eval `(swank:eval-and-grab-output ,sexp-str)))
          (setq stdout-res (slime-eval `(swank:pprint-eval ,(concat "'" (second res)))))
          (funcall handler res stdout-res)))
-      ((emacs-lisp-mode lisp-interaction-mode)                             ; emacs-lisps
+      ((emacs-lisp-mode lisp-interaction-mode) ; emacs-lisps
        (funcall handler (prin1-to-string
                          (eval (read sexp-str)))))
       (t
        (require 'le-comint-gather-output)
        (le::comint-get-output sexp-str handler)))))
-
 
 
 
