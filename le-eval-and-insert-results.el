@@ -12,9 +12,9 @@
 
 ;; Created: Tue Sep 13 01:04:33 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Tue Apr 30 01:09:08 2013 (+0800)
+;; Last-Updated: Sun May  5 11:50:00 2013 (+0800)
 ;;           By: Le Wang
-;;     Update #: 83
+;;     Update #: 114
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/le-eval-and-insert-results.el
 ;; Keywords: emacs-lisp evaluation
 ;; Compatibility: Emacs 23+
@@ -60,41 +60,61 @@
 ;;; Code:
 
 (eval-when-compile (require 'cl))
-	;;; ⇒ cl
 
 (provide 'le-eval-and-insert-results)
 	;;; ⇒ le-eval-and-insert-results
 
-(defun le::eair::format-eval-outpt (res &optional stdout)
+(defun le::eair::format-res (type str)
   (let ((triple-comment (make-string 3 (string-to-char comment-start))))
-    (concat
-     (when (not (zerop (length stdout)))
-       (concat
-        "\t"
-        triple-comment
-        " ⇒ <STDOUT>\n"
-        "\t"
-        triple-comment
-        " "
-        (replace-regexp-in-string
-         "\n"
-         (concat
-          "\n\t"
-          triple-comment
-          " ")
-         stdout)
-        "\n"))
-     "\t"
-     triple-comment
-     " ⇒ "
-     (replace-regexp-in-string
-      "\n"
-      (concat
-       "\n\t"
-       triple-comment
-       "   ")
-      res)
-     "\n")))
+    (apply 'concat
+           (nconc
+            (list
+             "\t"
+             triple-comment
+             " ⇒ ")
+            (when type
+              (list
+               "<"
+               (symbol-name type)
+               ">"
+               "\n"
+               "\t"
+               triple-comment
+               "   "))
+            (list
+             (replace-regexp-in-string
+              "\n"
+              (concat
+               "\n\t"
+               triple-comment
+               "   ")
+              (replace-regexp-in-string
+               "\n\\'"
+               ""
+               str)))))))
+
+(defun le::eair::format-eval-output (res)
+  (if (hash-table-p res)
+      (mapconcat
+       'identity
+       (nconc (cl-reduce
+               (lambda (accum k)
+                 (let ((res (gethash k res)))
+                   (if res
+                       (nconc
+                        accum
+                        (list
+                         (le::eair::format-res
+                          (if (eq k 'value)
+                              nil
+                            k)
+                          res)))
+                     accum)))
+               '(value out err)
+               :initial-value ())
+              '(""))
+       "\n")
+    (le::eair::format-res nil res)))
 
 (defun le::eval-and-insert-all-sexps (beg end)
   "call `le::eval-and-insert-results' for all sexps in region.
@@ -170,11 +190,11 @@ With universal arguments, use whole buffer.
 (defun le::eair::result-handler-maker (pos)
   "create a function appropriate for handling result"
   (let ((marker (copy-marker pos)))
-    (lambda (res &optional stdout)
+    (lambda (res)
       (with-current-buffer (marker-buffer marker)
         (save-excursion
           (goto-char marker)
-          (insert (le::eair::format-eval-outpt res stdout))))
+          (insert (le::eair::format-eval-output res))))
       (set-marker marker nil))))
 
 (defun le::eair::no-context ()
@@ -193,9 +213,11 @@ With universal arguments, use whole buffer.
 
 (defun le::eair::sql-ok ()
   (and (le::eair::no-context)
-       (cond ((not (= ?\; (char-before)))
-              (error "Missing semi-colon."))
-             (t))))
+       (save-excursion
+         (skip-chars-backward "\n\t ")
+         (if (= ?\; (char-before))
+             t
+           (error "Missing semi-colon.")))))
 
 (defun le::evair-process-region ()
   "Process raw BEG END for interactive use."
@@ -216,7 +238,15 @@ With universal arguments, use whole buffer.
           (list (point-at-bol 0)
                 (progn
                   (funcall forward-func)
-                  (skip-chars-backward " \t\n")
+                  (skip-chars-backward " \t")
+                  (unless (bolp)
+                    (if (eobp)
+                        (insert "\n")
+                      (forward-line 1)))
+                  (unless (looking-at-p "^[ \t]*$")
+                    (insert "\n")
+                    (forward-line -1))
+
                   (when validation
                     (funcall validation))
                   (point)))
@@ -227,31 +257,43 @@ With universal arguments, use whole buffer.
   "eval region as single form and append result to end."
   (interactive (le::evair-process-region))
   (let* ((sexp-str (buffer-substring-no-properties beg end))
-         (insert-pos (save-excursion
-                       (goto-char end)
-                       (skip-chars-forward " \t")
-                       (unless (bolp)
-                         (if (eobp)
-                             (insert "\n")
-                           (forward-line 1)))
-                       (point))))
+         (insert-pos end))
     (le::eval-and-insert-sexp sexp-str insert-pos)))
+
+(defun le::evair-nrepl-handler (handler)
+  (let ((res (make-hash-table)))
+    (lambda (reponse)
+      (loop for key in '("value" "out" "err")
+            for val = (cdr (assoc key response))
+            if val
+            do (puthash (intern key) val res))
+      (when (equal (cadr (assoc "status" response)) "done")
+        (funcall handler res)))))
 
 (defun le::eval-and-insert-sexp (sexp-str insert-pos)
   "eval str and insert results at insert-pos."
   (let ((handler (le::eair::result-handler-maker insert-pos)))
     (case major-mode
       ('clojure-mode
-       (let (res pretty-res)
-         (setq res (slime-eval `(swank:eval-and-grab-output ,sexp-str)))
-         (setq stdout-res (slime-eval `(swank:pprint-eval ,(concat "'" (second res)))))
-         (funcall handler res stdout-res)))
+       (nrepl-send-string sexp-str
+                          (le::evair-nrepl-handler handler)
+                          nrepl-buffer-ns))
       ((emacs-lisp-mode lisp-interaction-mode) ; emacs-lisps
        (funcall handler (prin1-to-string
                          (eval (read sexp-str)))))
       (t
        (require 'le-comint-gather-output)
        (le::comint-get-output sexp-str handler)))))
+
+;;; testing
+(ignore
+ (quote
+
+  (let ((hash (make-hash-table)))
+    (puthash 'value "abc" hash)
+    (le::eair::format-eval-output hash))
+
+  ))
 
 
 
