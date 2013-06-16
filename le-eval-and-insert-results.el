@@ -12,9 +12,9 @@
 
 ;; Created: Tue Sep 13 01:04:33 2011 (+0800)
 ;; Version: 0.1
-;; Last-Updated: Sun May  5 11:50:00 2013 (+0800)
+;; Last-Updated: Sun Jun 16 21:52:35 2013 (+0800)
 ;;           By: Le Wang
-;;     Update #: 114
+;;     Update #: 117
 ;; URL: https://github.com/lewang/le_emacs_libs/blob/master/le-eval-and-insert-results.el
 ;; Keywords: emacs-lisp evaluation
 ;; Compatibility: Emacs 23+
@@ -172,8 +172,8 @@ With universal arguments, use whole buffer.
 
 
 (defvar le::eair::modes-alist
-  '((clojure-mode          beginning-of-defun end-of-defun nil)
-    (emacs-lisp-mode       beginning-of-defun end-of-defun nil)
+  '((clojure-mode          backward-sexp forward-sexp nil)
+    (emacs-lisp-mode       backward-sexp forward-sexp nil)
     (lisp-interaction-mode beginning-of-defun end-of-defun nil)
     (sql-mode              backward-paragraph forward-paragraph le::eair::sql-ok)
     (t                     backward-paragraph forward-paragraph le::eair::no-context))
@@ -235,7 +235,7 @@ With universal arguments, use whole buffer.
       (goto-char initial-beg)
       (skip-chars-forward " \t\n")
       (prog1
-          (list (point-at-bol 0)
+          (list (point-at-bol 1)
                 (progn
                   (funcall forward-func)
                   (skip-chars-backward " \t")
@@ -266,7 +266,8 @@ With universal arguments, use whole buffer.
       (loop for key in '("value" "out" "err")
             for val = (cdr (assoc key response))
             if val
-            do (puthash (intern key) val res))
+            do (let ((key (intern key)))
+                 (puthash key (concat (gethash key res) val) res)))
       (when (equal (cadr (assoc "status" response)) "done")
         (funcall handler res)))))
 
