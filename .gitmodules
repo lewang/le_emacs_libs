@@ -181,3 +181,33 @@
 [submodule "git-modes"]
 	path = git-modes
 	url = git://github.com/lunaryorn/git-modes.git
+[submodule "cyberpunk-theme"]
+	path = cyberpunk-theme
+	url = git@github.com:n3mo/cyberpunk-theme.el.git
+[submodule "dash"]
+	path = dash
+	url = git@github.com:magnars/dash.el.git
+[submodule "emacs-request"]
+	path = emacs-request
+	url = git@github.com:tkf/emacs-request.git
+[submodule "flx"]
+	path = flx
+	url = git@github.com:lewang/flx.git
+[submodule "fringe-helper"]
+	path = fringe-helper
+	url = git@github.com:nschum/fringe-helper.el.git
+[submodule "github-browse-file"]
+	path = github-browse-file
+	url = git@github.com:osener/github-browse-file.git
+[submodule "haskell-mode"]
+	path = haskell-mode
+	url = git@github.com:lewang/haskell-mode.gitgit@github.com:haskell/haskell-mode.git
+[submodule "multiple-cursors"]
+	path = multiple-cursors
+	url = git@github.com:magnars/multiple-cursors.el.git
+[submodule "nrepl"]
+	path = nrepl
+	url = git@github.com:kingtim/nrepl.el.git
+[submodule "ritz"]
+	path = ritz
+	url = git@github.com:pallet/ritz.git
