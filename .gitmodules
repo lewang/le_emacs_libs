@@ -39,7 +39,7 @@
 	url = https://github.com/mooz/js2-mode.git
 [submodule "expand-region"]
 	path = expand-region
-	url = git@github.com:lewang/expand-region.el.git
+	url = git@github.com:magnars/expand-region.el.git
 [submodule "magit"]
 	path = magit
 	url = git://github.com/magit/magit.git
