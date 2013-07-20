@@ -49,9 +49,6 @@
 [submodule "auto-complete"]
 	path = auto-complete
 	url = git://github.com/m2ym/auto-complete.git
-[submodule "rinari"]
-	path = rinari
-	url = git@github.com:lewang/rinari.git
 [submodule "yasnippet"]
 	path = yasnippet
 	url = https://github.com/capitaomorte/yasnippet.git
