@@ -39,7 +39,7 @@
 	url = https://github.com/mooz/js2-mode.git
 [submodule "expand-region"]
 	path = expand-region
-	url = git@github.com:magnars/expand-region.el.git
+	url = git://github.com/magnars/expand-region.el.git
 [submodule "magit"]
 	path = magit
 	url = git://github.com/magit/magit.git
@@ -123,7 +123,7 @@
 	url = git://github.com/lewang/le_emacs_MRU_yank.git
 [submodule "emacs_chrome"]
 	path = emacs_chrome
-	url = git://github.com/stsquad/emacs_chrome.git
+	url = git@github.com:stsquad/emacs_chrome.git
 [submodule "cucumber"]
 	path = cucumber
 	url = git://github.com/michaelklishin/cucumber.el.git
@@ -168,7 +168,7 @@
 	url = git@github.com:lewang/delim-pad.git
 [submodule "gh"]
 	path = gh
-	url = git://github.com/sigma/gh.el
+	url = git@github.com:lewang/gh.el.git
 [submodule "pcache"]
 	path = pcache
 	url = git://github.com/sigma/pcache
