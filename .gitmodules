@@ -201,7 +201,7 @@
 	url = git@github.com:osener/github-browse-file.git
 [submodule "haskell-mode"]
 	path = haskell-mode
-	url = git@github.com:lewang/haskell-mode.gitgit@github.com:haskell/haskell-mode.git
+	url = git@github.com:lewang/haskell-mode.git
 [submodule "multiple-cursors"]
 	path = multiple-cursors
 	url = git@github.com:magnars/multiple-cursors.el.git
@@ -211,3 +211,6 @@
 [submodule "ritz"]
 	path = ritz
 	url = git@github.com:pallet/ritz.git
+[submodule "magithub"]
+	path = magithub
+	url = git@github.com:lewang/magithub.git
