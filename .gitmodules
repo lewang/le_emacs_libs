@@ -87,7 +87,7 @@
 	url = https://github.com/technomancy/clojure-mode.git
 [submodule "coffee-mode"]
 	path = coffee-mode
-	url = https://github.com/defunkt/coffee-mode
+	url = https://github.com/lewang/coffee-mode
 [submodule "scss-mode"]
 	path = scss-mode
 	url = https://github.com/antonj/scss-mode.git
