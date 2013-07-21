@@ -48,7 +48,7 @@
 	url = git://orgmode.org/org-mode.git
 [submodule "auto-complete"]
 	path = auto-complete
-	url = git://github.com/m2ym/auto-complete.git
+	url = git@github.com:auto-complete/auto-complete.git
 [submodule "yasnippet"]
 	path = yasnippet
 	url = https://github.com/capitaomorte/yasnippet.git
