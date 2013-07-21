@@ -1,0 +1,8 @@
+* Avoid `git submodule update' and `git submodule sync'
+
+The sync direction isn't what you want as package maintainer. 
+* INSTALLATION
+** call `git_update_dot_gitmodules' to make sure right URLs are encoded.
+** `cp -R' to install submosule with all remotes, etc in place
+
+** .git folder for submodules lives in ../../.git/modules/.emacs.d/le_emacs_libs/modules/
