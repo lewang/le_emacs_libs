@@ -208,3 +208,6 @@
 [submodule "magithub"]
 	path = magithub
 	url = git@github.com:lewang/magithub.git
+[submodule "popup"]
+	path = popup
+	url = git@github.com:auto-complete/popup-el.git
