@@ -1,64 +1,42 @@
 ;;; TODO selecting all lines creats too many spurious spaces at EOL, maybe
 ;;; just the indentation?
 
-(require 'iedit-rect)
+(require 'multiple-cursors-core)
 
-(defun le::fix-indentation-extend (extend-to)
-  (if iedit-rectangle
-      (let ((beg (min (nth 0 iedit-rectangle) extend-to))
-            (end (max (nth 1 iedit-rectangle) extend-to)))
-        (iedit-rectangle-mode)
-        (goto-char end)
-        (skip-chars-backward " \t\n")
+(defun le::fix-indentation-min-indent-in-region (beg end)
+  "Return minimum-indent in region (COLUMN . POINT).
 
-        (goto-char beg)
-        (goto-char (point-at-bol))
-        ;; skip spaces and lines
-        (skip-chars-forward " \t\n")
-        ;; include indentation in rectangle
-        (goto-char (point-at-bol))
-        (setq beg (point))
-        (let ((min-indent (cons 9999 (point-min))))
-          (while (< (point) end)
-            (back-to-indentation)
-            (if (< (current-column) (car min-indent))
-                (setq  min-indent (cons (current-column)
-                                        (point))))
-            (forward-line 1))
-          (goto-char end)
-          ;; use visual rectangle
-          (when (bolp)
-            (forward-line -1))
-          (move-to-column (car min-indent) t)
-          (iedit-rectangle-mode beg (point))
-          (goto-char (cdr min-indent))))
-    (error "no current rectangle")))
-
+Blank lines are skipped."
+  (goto-char beg)
+  (let ((min-indent (cons 9999 (point-min))))
+    (while (< (point) end)
+      (back-to-indentation)
+      (unless (looking-at "\\s-*\n")
+        (if (< (current-column) (car min-indent))
+            (setq  min-indent (cons (current-column)
+                                    (point)))))
+      (forward-line 1))
+    min-indent))
 
 (defun le::fix-indentation (beg end)
-  "fix indentation by editing expanded region as rectangle.
-
-when rectangle is active:
-
-  when point is outside rectangle, extend it to include point.
-  when point is inside rectangle, cancel `iedit-rect-mode'"
+  "Add cursors where appropriate to fix indenttion."
   (interactive "*r")
-
-  (let ((beg (copy-marker beg))
-        (end (copy-marker end t)))
-   (if iedit-rectangle-mode
-       (le::fix-indentation-extend (point))
-     (iedit-rectangle-mode beg
-                           ;; we pick the visual rectangle -- if end is (bol) then the visual rectangle
-                           ;; does not include it.
-                           (progn (goto-char end)
-                                  (if (bolp)
-                                      (progn (skip-chars-backward " \t\n")
-                                             (point))
-                                    end)))
-     (le::fix-indentation-extend beg)
-     (le::fix-indentation-extend end))
-   (set-marker beg nil)
-   (set-marker end nil)))
+  (deactivate-mark)
+  (let ((min-col (car (le::fix-indentation-min-indent-in-region beg end)))
+        first-cursor)
+    (goto-char beg)
+    (while (< (point) end)
+      (back-to-indentation)
+      (unless (looking-at "\\s-*\n")
+        (move-to-column min-col t)
+        (if first-cursor
+            (mc/create-fake-cursor-at-point)
+          ;; Don't create the first cursor now; it gets created when
+          ;; the mode is activated.
+          (setq first-cursor (point))))
+      (forward-line 1))
+    (when first-cursor
+      (goto-char first-cursor)
+      (mc/maybe-multiple-cursors-mode))))
 
 ;; (global-set-key (kbd "<C-S-return>") 'le::fix-indentation)

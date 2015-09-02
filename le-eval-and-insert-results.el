@@ -260,15 +260,46 @@ With universal arguments, use whole buffer.
          (insert-pos end))
     (le::eval-and-insert-sexp sexp-str insert-pos)))
 
+;;;###autoload
+(defun le::eval-and-insert-toplevel-results (&optional beg end)
+  "Evaluate top level form and append resutl as comment.
+
+When region is active, do so for all forms in region (ignore levels)."
+  (interactive (when (use-region-p)
+                 (let ((beg (region-beginning))
+                       (end (region-end)))
+                   (save-excursion
+                     ;; find precise beginning and ending of first/last sexp
+                     (list (progn (goto-char beg)
+                                  (forward-sexp)
+                                  (backward-sexp)
+                                  (point))
+                           (progn (goto-char end)
+                                  (backward-sexp)
+                                  (forward-sexp)
+                                  (point)))))))
+  (if end
+      (save-excursion
+        (goto-char beg)
+        (let ((end (copy-marker end t)))
+          (while (< (point) end)
+            (forward-sexp)
+            (call-interactively 'le::eval-and-insert-results))))
+    (end-of-defun)
+    (call-interactively 'le::eval-and-insert-results)))
+
 (defun le::evair-nrepl-handler (handler)
   (let ((res (make-hash-table)))
-    (lambda (reponse)
-      (loop for key in '("value" "out" "err")
-            for val = (cdr (assoc key response))
-            if val
-            do (let ((key (intern key)))
-                 (puthash key (concat (gethash key res) val) res)))
-      (when (equal (cadr (assoc "status" response)) "done")
+    (lambda (response)
+      ;; response starts with a 'dict
+      (when (eq (car response) 'dict)
+        (setq response (cdr response))
+        (loop for key in '("value" "out" "err")
+              for val = (lax-plist-get response key)
+              if val
+              do (let ((key (intern key)))
+                   (puthash key (concat (gethash key res) val) res))))
+      (when (equal (car (lax-plist-get response "status")) "done")
         (funcall handler res)))))
 
 (defun le::eval-and-insert-sexp (sexp-str insert-pos)
@@ -277,8 +308,7 @@ With universal arguments, use whole buffer.
     (case major-mode
       ('clojure-mode
        (nrepl-send-string sexp-str
-                          (le::evair-nrepl-handler handler)
-                          nrepl-buffer-ns))
+                          (le::evair-nrepl-handler handler)))
       ((emacs-lisp-mode lisp-interaction-mode) ; emacs-lisps
        (funcall handler (prin1-to-string
                          (eval (read sexp-str)))))
